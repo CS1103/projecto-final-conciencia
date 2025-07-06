@@ -115,7 +115,7 @@ int main() {
 
     auto t0 = std::chrono::steady_clock::now();
     std::cout << "Starting to train..." << std::endl;
-    net.train<CrossEntropyLoss>(input_tensor, label_tensor, 200, 32, 0.001f);
+    net.train<CrossEntropyLoss>(input_tensor, label_tensor, 110, 32, 0.001f);
 
     auto t1 = std::chrono::steady_clock::now();
     std::cout << "Training took "
@@ -123,7 +123,7 @@ int main() {
             << " seconds\n";
 
     std::cout << "Saving to file... ";
-    net.save("./model_ep200.nn");
+    net.save("./model_ep250.nn");
     std::cout << "Done." << std::endl;
 
     std::cout << "Predicting..." << std::endl;

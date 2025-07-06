@@ -45,6 +45,7 @@ Display* display;
 
 int res_index = 0;
 int lastcombo = 511;
+bool notPopn10 = false;
 
 void print_usage(const char *prog)
 {
@@ -102,19 +103,19 @@ void evaluatePress(Tensor<T, 2> &image, NeuralNetwork<T> &net)
     if (lastcombo != pred)
     {
 #if defined(USE_X11)
-        if (combinations[lastcombo] != "0") {
+        if (combinations[lastcombo] != "0" || combinations[pred] == combinations[lastcombo]) {
             for (KeySym key : keyCombos[combinations[lastcombo]]){
                 KeyCode keycode = XKeysymToKeycode(display, key);
                 XTestFakeKeyEvent(display, keycode, False, 0);
-                XFlush(display);
             }
+            XFlush(display);
         } 
-        if (combinations[pred] != "0") {
+        if (combinations[pred] != "0" && combinations[pred] != combinations[lastcombo]) {
             for (KeySym key : keyCombos[combinations[pred]]){
                 KeyCode keycode = XKeysymToKeycode(display, key);
                 XTestFakeKeyEvent(display, keycode, True, 0);
-                XFlush(display);
             }
+            XFlush(display);
         } 
 #endif
     }
@@ -266,8 +267,10 @@ int main(int argc, char *argv[])
     net.add_layer(std::make_unique<Softmax<float>>());
 
     std::cout << "Reading model from file... ";
-    net.load("../../model_ep200.nn");
+    net.load("../../model_ep250.nn");
     std::cout << "Done." << std::endl;
+
+    bool notPopn10 = (argc > 1 && std::string(argv[1]) == "--not10");
 
     std::cout << "Starting capture (" << fmtName << ") on device " << devName << "... Press ESC to quit.\n";
     while (av_read_frame(fmtCtx, pkt) >= 0)
@@ -283,6 +286,7 @@ int main(int argc, char *argv[])
                     cv::Mat gray, res;
                     cv::cvtColor(mat, gray, cv::COLOR_BGR2GRAY);
                     cv::Rect roi(651, 736, 616, 52);
+                    if(notPopn10) roi.y -= 38;
                     cv::Mat crop = gray(roi);
                     cv::resize(crop, res, cv::Size(), 0.25, 0.25, cv::INTER_AREA);
                     {
