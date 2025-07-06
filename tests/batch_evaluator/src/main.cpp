@@ -97,7 +97,7 @@ int main() {
     net.add_layer(std::make_unique<Softmax<float>>());
 
     std::cout << "Reading model from file... ";
-    net.load("../../model_ep250.nn");
+    net.load("../../model_ep150.nn");
     std::cout << "Done." << std::endl;
 
     std::cout << "Predicting..." << std::endl;

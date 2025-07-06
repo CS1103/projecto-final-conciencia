@@ -6,8 +6,8 @@
 #include <vector>
 #include <random>
 
-#include <opencv4/opencv2/opencv.hpp>
-#include <opencv4/opencv2/imgcodecs.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 #define DIFFICULTY_LEVELS 9
 #define IMAGE_COUNT_DIFFI 20
@@ -72,13 +72,11 @@ void png_overlay(const cv::Mat &src, cv::Mat &dst, int x, int y) {
     }
 }
 
-void generate_halo(cv::Mat &image, const std::string &num = ""){
+void generate_halo(cv::Mat &image){
     std::vector<int> picks;
-    std::uniform_int_distribution<> am_notes(2,9);
-    if (num == "") picks = rand_sample(elements, (size_t)am_notes(gen));
-    else picks = combo_fromstr(num);
+    std::uniform_int_distribution<> am_notes(1,8);
+    picks = rand_sample(elements, (size_t)am_notes(gen));
     for (int &i : picks){
-        if (i == 0) continue;
         cv::Mat halo = i == 4 || i == 6 || i == 2 || i == 8 ? halo_small : halo_big;
         int combo_x = halo_positions[i-1], combo_y = 0;
         png_overlay(halo, image, combo_x, combo_y);
@@ -136,12 +134,12 @@ int main(int, char**){
         std::string strnum = std::to_string(c);
         for (int d = 0; d < DIFFICULTY_LEVELS; d++) {
             for (int i = 0; i < IMAGE_COUNT_DIFFI + 10; i++){
-                std::uniform_real_distribution<> dist(20, 60);
+                std::uniform_real_distribution<> dist(15, 50);
                 cv::Mat res = background.clone();
-                if ((d > 6) && ((i > 12 && i < 20) || (i > 21 && i < 25) || (i > 26 && i < 29))) generate_halo(res);
-                if (d == 5) generate_pos(res, true, strnum);
+                if ((i > 14 && i < 20) || (i > 21 && i < 25) || (i > 26 && i < 29)) generate_halo(res);
+                if (i != 0 && i != 10 && i != 15) generate_pos(res, true, strnum);
                 generate_pos(res, false, strnum);
-                std::string fn = "../results/images/" + strnum + "-" + std::to_string(d+1) + "-" + std::to_string((i-15)+1) + ".png";
+                std::string fn = "../results/images/" + strnum + "-" + std::to_string(d+1) + "-" + std::to_string((i-25)+1) + ".png";
                 cv::Mat endres, smallres;
                 cv::cvtColor(res, endres, cv::COLOR_BGRA2GRAY);
                 if (i % 2 == 0) {
@@ -152,23 +150,6 @@ int main(int, char**){
                 if (i < 20) images.push_back(smallres);
                 else if (i < 25) testimages.push_back(smallres);
                 else cv::imwrite(fn, smallres);
-            }
-        }
-
-        if (c == 0) {
-            //aniadir 511 imagenes mas con las luces
-            for (int i = 0; i < (int)combinations.size() - 1; i++){
-                std::uniform_real_distribution<> dist(20, 50);
-                cv::Mat res = background.clone();
-                generate_halo(res, std::to_string(combinations[i]));
-                generate_pos(res, false, strnum);
-                std::string fn = "../results/images/" + strnum + "-" + std::to_string(i+1) + ".png";
-                cv::Mat endres, smallres;
-                cv::cvtColor(res, endres, cv::COLOR_BGRA2GRAY);
-                cv::resize(endres, smallres, cv::Size(), 0.5, 0.5, cv::INTER_AREA);
-                images.push_back(smallres);
-                testimages.push_back(smallres);
-                cv::imwrite(fn, smallres);
             }
         }
     }
@@ -221,14 +202,6 @@ int main(int, char**){
             for (int i = 0; i < IMAGE_COUNT_DIFFI + 5; i++) {
                 if (i < 20) label_out.write(reinterpret_cast<const char*>(&c), sizeof(c));
                 else testlabel_out.write(reinterpret_cast<const char*>(&c), sizeof(c));
-            }
-        }
-
-        if (c == 0) {
-            //aniadir 511 labels mas con las luces
-            for (int i = 0; i < (int)combinations.size() - 1; i++){
-                label_out.write(reinterpret_cast<const char*>(&combinations[i]), sizeof(combinations[i]));
-                testlabel_out.write(reinterpret_cast<const char*>(&combinations[i]), sizeof(combinations[i]));
             }
         }
     }

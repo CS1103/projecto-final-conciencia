@@ -12,8 +12,8 @@
 
 #include <random>
 
-#include <opencv4/opencv2/opencv.hpp>
-#include <opencv4/opencv2/imgcodecs.hpp>
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 using namespace utec::neural_network;
 
@@ -73,7 +73,7 @@ int main() {
     net.add_layer(std::make_unique<Softmax<float>>());
 
     std::cout << "Reading model from file... ";
-    net.load("../../model_ep250.nn");
+    net.load("../../model_ep150.nn");
     std::cout << "Done." << std::endl;
 
     std::string custom_path = "";

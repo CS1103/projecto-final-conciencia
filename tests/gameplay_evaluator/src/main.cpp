@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
     net.add_layer(std::make_unique<Softmax<float>>());
 
     std::cout << "Reading model from file... ";
-    net.load("../../model_ep250.nn");
+    net.load("../../model_ep150.nn");
     std::cout << "Done." << std::endl;
 
     bool notPopn10 = (argc > 1 && std::string(argv[1]) == "--not10");
