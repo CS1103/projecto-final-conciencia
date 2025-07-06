@@ -54,19 +54,20 @@
    cmake ..
    make
    ```
-
-> *Ejemplo de repositorio y comandos, ajustar según proyecto.*
-
 ---
 
 ### 1. Investigación teórica
 
 * **Objetivo**: Explorar fundamentos y arquitecturas de redes neuronales.
-* **Contenido de ejemplo**:
 
-  1. Historia y evolución de las NNs.
-  2. Principales arquitecturas: MLP, CNN, RNN.
-  3. Algoritmos de entrenamiento: backpropagation, optimizadores.
+Las clases layers son las capas que conectadas entre sí, hacen posible que funcione el proceso de entrenamiento. Hay tres partes donde se presentan estas capas: Una capa de entrada, donde se ingresa los valores iniciales del entrenamiento; las capas ocultas, donde se realiza todo el proceso de cálculo y ponderación; por último la capa de salida con los valores de destino que se busca en el entrenamiento. En el entrenamiento se busca que cada valor inicial que ingrese, se procese dentro de las capas ocultas con ponderaciones aleatorias que se van actualizando gradualmente para acercarlas a la capa de destino. Este proceso sigue su curso hasta un punto en que varias capas coincidan con la salida; es decir, tengan valores esperados (IBM, 2021).
+La generación de las capas tienen dos métodos como forward, utilizado para generar un resultado en cada capa acorde al valor anterior que tiene y backward para obtener los valores de los errores en la gradiente en cada capa respecto a los pesos de cada capa. Esto para hacer el proceso de "back propagation". La utilidad de ello es para la actualización de los pesos y continuar con el modelo del entrenamiento.
+
+Se implementó la clase ReLU como función de activación para el proyecto, su objetivo es evaluar cada dato de entrada y comparar si este dato es mayor o igual a 0 o menor. Si es mayor a 0, la función deja tal cual el valor de entrada. Caso contrario, si el valor es un número negativo, lo convierte a 0. Este método es uno de los más utilizados hoy en día para formar redes neuronales más profundas debido a que reduce en gran medida el back propagation. Asimismo, ayuda a mitigar el problema del gradiente evanescente, ocasionado porque la gradiente usada para actualizar nuestros valores en cada época tiene un valor muy pequeño, el cual retrasa el entrenamiento y puede llegar a detenerlo (Canales, 2025).
+En el proyecto al usar esta versión ReLU donde los valores negativos ya no existen se pueden activar algunas neuronas en el proceso de entrenamiento las cuales ayudan a un cálculo mucho más eficiente. Esto resulta aún más útil cuando en el proyecto consideramos los métodos que usamos como Sigmoid y Softmax, una para convertir el valor de entrada en uno dentro del rango de 0 y 1 y la otra para el cálculo de las probabilidades de que los valores insertados pertenezcan a una clase u otra, donde el problema del desvanecimiente es más común. 
+La inclusión de este tipo de función nos permite la generación de una mejor capa densa para la realización del entrenamiento pues se puede escalar a múltiples capas sin hacer sobrecarga computacional.
+
+
 
 ---
 
