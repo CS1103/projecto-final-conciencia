@@ -26,11 +26,12 @@
 * **Grupo**: `group_3_custom_name`
 * **Integrantes**:
 
-  * Alumno A – 209900001 (Responsable de investigación teórica)
-  * Alumno B – 209900002 (Desarrollo de la arquitectura)
-  * Alumno C – 209900003 (Implementación del modelo)
-  * Alumno D – 209900004 (Pruebas y benchmarking)
-  * Alumno E – 209900005 (Documentación y demo)
+  * Matos Copello Rayhan Derek – 202410377 (Responsable de investigación teórica)
+  * Tamara Ureta, Anyeli Azumi – 200900000 (Responsable de investigación teórica)
+  * Alvarado León, Adriana Celeste B – 209900002 (Diseño e implementación)
+  * Mattos Gutierrez, Angel Daniel C – 209900003 (Implementación del modelo)
+  * Aquino Castro Farid Jack D – 202410569 (Análisis y Rendimiento)
+  * Portugal Vilca Julio Cesar E – 209900005 (Documentación y demo)
 
 > *Nota: Reemplazar nombres y roles reales.*
 
