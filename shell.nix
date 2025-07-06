@@ -20,7 +20,9 @@ pkgs.clangStdenv.mkDerivation {
     pipewire
     pkg-config
     glib
-    libsysprof-capture
-    libuuid
+    dbus
+    xorg.libX11
+    xorg.libXtst
+    xorg.libXi
   ];
 }

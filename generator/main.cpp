@@ -12,13 +12,14 @@
 #define DIFFICULTY_LEVELS 9
 #define IMAGE_COUNT_DIFFI 10
 
-cv::Mat background, kun_red, kun_blue, kun_white, kun_yellow, kun_green;
+cv::Mat background, kun_red, kun_blue, kun_white, kun_yellow, kun_green, halo_big, halo_small;
 
 std::vector<int> elements = {1,2,3,4,5,6,7,8,9};
 std::vector<int32_t> combinations;
 std::random_device rd;
 std::mt19937 gen(rd());
 
+int halo_positions[9] = {-2, 38, 70, 110, 142, 182, 214, 246, 286};
 int kun_positions[9] = {0, 39, 68, 107, 136, 175, 204, 243, 272};
 
 std::vector<int> rand_sample(const std::vector<int> &pop, size_t k){
@@ -71,13 +72,24 @@ void png_overlay(const cv::Mat &src, cv::Mat &dst, int x, int y) {
     }
 }
 
+void generate_halo(cv::Mat &image){
+    std::vector<int> picks;
+    std::uniform_int_distribution<> am_notes(1,8);
+    picks = rand_sample(elements, (size_t)am_notes(gen));
+    for (int &i : picks){
+        cv::Mat halo = i == 4 || i == 6 || i == 2 || i == 8 ? halo_small : halo_big;
+        int combo_x = halo_positions[i-1], combo_y = 0;
+        png_overlay(halo, image, combo_x, combo_y);
+    }
+}
+
 void generate_pos(cv::Mat &image, bool garb = false, const std::string &num = ""){
     std::vector<int> picks;
-    std::uniform_int_distribution<> am_notes(1,5);
+    std::uniform_int_distribution<> am_notes(1,6);
     if (garb) picks = rand_sample(elements, (size_t)am_notes(gen));
     else picks = combo_fromstr(num);
     for (int &i : picks){
-        std::uniform_int_distribution<> am_positions(10, 15);
+        std::uniform_int_distribution<> am_positions(10, 20);
         int combo_x = kun_positions[i-1], combo_y = garb ? 13-am_positions(gen) : 13;
         switch (i) {
             case 1: case 9: png_overlay(kun_white,  image, combo_x, combo_y); break;
@@ -99,6 +111,9 @@ int main(int, char**){
     kun_yellow = cv::imread("./assets/kuns/yellow.png", cv::IMREAD_UNCHANGED);
     kun_white = cv::imread("./assets/kuns/white.png", cv::IMREAD_UNCHANGED);
 
+    halo_big = cv::imread("./assets/halo.png", cv::IMREAD_UNCHANGED);
+    halo_small = cv::imread("./assets/halo.png", cv::IMREAD_UNCHANGED);
+
     for (int r = 1; r <= 9; ++r) {
         std::vector<int> current;
         generate_combos(elements, r, 0, current, combinations);
@@ -119,12 +134,18 @@ int main(int, char**){
         std::string strnum = std::to_string(c);
         for (int d = 0; d < DIFFICULTY_LEVELS; d++) {
             for (int i = 0; i < IMAGE_COUNT_DIFFI + 10; i++){
+                std::uniform_real_distribution<> dist(15, 50);
                 cv::Mat res = background.clone();
-                if (i != 0) generate_pos(res, true, strnum);
+                if ((i > 4 && i < 10) || (i > 11 && i < 15) || (i > 16 && i < 19)) generate_halo(res);
+                if (i != 0 && i != 10 && i != 15) generate_pos(res, true, strnum);
                 generate_pos(res, false, strnum);
                 std::string fn = "../results/images/" + strnum + "-" + std::to_string(d+1) + "-" + std::to_string((i-15)+1) + ".png";
                 cv::Mat endres, smallres;
                 cv::cvtColor(res, endres, cv::COLOR_BGRA2GRAY);
+                if (i % 2 == 0) {
+                    if (i % 4 == 0) endres -= dist(gen);
+                    else endres += dist(gen);
+                }
                 cv::resize(endres, smallres, cv::Size(), 0.5, 0.5, cv::INTER_AREA);
                 if (i < 10) images.push_back(smallres);
                 else if (i < 15) testimages.push_back(smallres);
