@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(pong_ai)
+project(popn_ai)
 
 set(CMAKE_CXX_STANDARD 20)
 if(UNIX AND NOT APPLE)

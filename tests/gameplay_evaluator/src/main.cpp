@@ -34,14 +34,17 @@ using namespace utec::neural_network;
 std::array<int, 9> keySyms = 
 #if defined(USE_X11)
     {XK_C, XK_F, XK_V, XK_G, XK_B, XK_H, XK_N, XK_J, XK_M};
+#else
+    {1,2,3,4,5,6,7,8,9};
 #endif
 std::array<int, 9> elements = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 std::array<std::string, 512> combinations;
 #if defined(USE_X11)
 std::unordered_map<std::string, std::unordered_set<KeySym>> keyCombos;
-#endif
-
 Display* display;
+#else
+std::unordered_map<std::string, std::unordered_set<int>> keyCombos;
+#endif
 
 int res_index = 0;
 int lastcombo = 511;
@@ -117,6 +120,8 @@ void evaluatePress(Tensor<T, 2> &image, NeuralNetwork<T> &net)
             }
             XFlush(display);
         } 
+#else
+        std::cout << "Not implemented on this platform yet." << std::endl;
 #endif
     }
     lastcombo = pred;
@@ -230,11 +235,13 @@ int main(int argc, char *argv[])
         generate_combos(elements, r, 0, current);
     }
 
+#if defined(USE_X11)
     display = XOpenDisplay(nullptr);
     if (!display) {
         std::cerr << "Cannot open display\n";
         return 1;
     }
+#endif
 
     combinations[511] = "0";
     combinations[lastcombo] = "0";
@@ -267,7 +274,7 @@ int main(int argc, char *argv[])
     net.add_layer(std::make_unique<Softmax<float>>());
 
     std::cout << "Reading model from file... ";
-    net.load("../../model_ep150.nn");
+    net.load("../../model_ep125.nn");
     std::cout << "Done." << std::endl;
 
     bool notPopn10 = (argc > 1 && std::string(argv[1]) == "--not10");

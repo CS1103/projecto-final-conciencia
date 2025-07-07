@@ -72,10 +72,11 @@ void png_overlay(const cv::Mat &src, cv::Mat &dst, int x, int y) {
     }
 }
 
-void generate_halo(cv::Mat &image){
+void generate_halo(cv::Mat &image, const std::string &pat = ""){
     std::vector<int> picks;
     std::uniform_int_distribution<> am_notes(1,8);
-    picks = rand_sample(elements, (size_t)am_notes(gen));
+    if(!pat.empty()) picks = rand_sample(elements, (size_t)am_notes(gen));
+    else picks = combo_fromstr(pat);
     for (int &i : picks){
         cv::Mat halo = i == 4 || i == 6 || i == 2 || i == 8 ? halo_small : halo_big;
         int combo_x = halo_positions[i-1], combo_y = 0;
@@ -136,7 +137,12 @@ int main(int, char**){
             for (int i = 0; i < IMAGE_COUNT_DIFFI + 10; i++){
                 std::uniform_real_distribution<> dist(15, 50);
                 cv::Mat res = background.clone();
-                if ((i > 14 && i < 20) || (i > 21 && i < 25) || (i > 26 && i < 29)) generate_halo(res);
+                if ((i > 14 && i < 20) || (i > 21 && i < 25) || (i > 26 && i < 29)) {
+                    if(i % 2 == 0) generate_halo(res);
+                    else {
+                        if (c != 0) generate_halo(res, strnum);
+                    }
+                }
                 if (i != 0 && i != 10 && i != 15) generate_pos(res, true, strnum);
                 generate_pos(res, false, strnum);
                 std::string fn = "../results/images/" + strnum + "-" + std::to_string(d+1) + "-" + std::to_string((i-25)+1) + ".png";
