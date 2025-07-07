@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <filesystem>
 
 extern "C" {
     #include <libavformat/avformat.h>
@@ -48,7 +49,6 @@ std::unordered_map<std::string, std::unordered_set<int>> keyCombos;
 
 int res_index = 0;
 int lastcombo = 511;
-bool notPopn10 = false;
 
 void print_usage(const char *prog)
 {
@@ -273,10 +273,22 @@ int main(int argc, char *argv[])
     net.add_layer(std::make_unique<Dense<float>>(64, 512, init_w, init_b));
     net.add_layer(std::make_unique<Softmax<float>>());
 
+    std::string custom_path = "";
+    do
+    {
+        std::cout << "Input full path: " << std::endl;
+        std::getline(std::cin, custom_path);
+        if (std::filesystem::is_directory(custom_path) || !std::filesystem::exists(custom_path))
+        {
+            std::cout << "Invalid path. Try again." << std::endl;
+        }
+    } while (custom_path.empty());
+
     std::cout << "Reading model from file... ";
-    net.load("../../model_ep125.nn");
+    net.load(custom_path);
     std::cout << "Done." << std::endl;
 
+    bool printFrame = (argc > 1 && std::string(argv[1]) == "--printframe");
     bool notPopn10 = (argc > 1 && std::string(argv[1]) == "--not10");
 
     std::cout << "Starting capture (" << fmtName << ") on device " << devName << "... Press ESC to quit.\n";
@@ -301,6 +313,7 @@ int main(int argc, char *argv[])
                         for (size_t i = 0; i < 154 * 13; i++)
                             imageData(0, i) = res.data[i];
                     }
+                    if (printFrame) cv::imwrite("./frame.png", res);
                     evaluatePress(imageData, net);
                 }
             }
