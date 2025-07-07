@@ -33,29 +33,35 @@
   * Aquino Castro Farid Jack D – 202410569 (Análisis y Rendimiento)
   * Portugal Vilca Julio Cesar E – 202410487 (Documentación y demo)
 
-> *Nota: Reemplazar nombres y roles reales.*
-
 ---
 
 ### Requisitos e instalación
 
-1. **Compilador**: GCC 11 o superior
+1. **Compilador**: GCC 11 o superior, Clang 19 o superior
 2. **Dependencias**:
-
-   * CMake 3.18+
-   * Eigen 3.4
-   * \[Otra librería opcional]
+  Generales:
+   * CMake 3.12+
+   * OpenCV 4.6.0+
+   * OpenMP (Incluido en GCC, instalación adicional en Clang)
+   * FFmpeg 7.0+
+  Linux:
+   * Xlib (libX11) 
+   * libpipewire 0.3+
 3. **Instalación**:
 
    ```bash
-   git clone https://github.com/EJEMPLO/proyecto-final.git
+   git clone https://github.com/CS1103/projecto-final-conciencia.git
    cd proyecto-final
    mkdir build && cd build
    cmake ..
    make
    ```
 
-> *Ejemplo de repositorio y comandos, ajustar según proyecto.*
+Al compilar, encontrarás con el ejecutable principal (popn_ai) y dos carpetas adicionales.
+- (generator/popn_generator) Generador de imágenes
+- (tests/batch_evaluator) Test de datos de prueba
+- (tests/image_evaluator) Test de reconocimiento de imágenes
+- (tests/gameplay_evaluator) Test de gameplay (requiere una ROM de Pop'n Music 10 y el emulador PCSX2)
 
 ---
 

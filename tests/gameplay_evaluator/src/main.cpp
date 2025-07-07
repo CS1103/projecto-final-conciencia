@@ -1,6 +1,3 @@
-// FFmpeg + OpenCV C++ Example with Cross-Platform & KMS-DRM Support & Plane Selection
-// Capture desktop at 60 fps, convert to BGR24, grayscale & crop
-
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
@@ -10,12 +7,13 @@
 #include <unordered_set>
 #include <filesystem>
 
-extern "C" {
-    #include <libavformat/avformat.h>
-    #include <libavdevice/avdevice.h>
-    #include <libavcodec/avcodec.h>
-    #include <libswscale/swscale.h>
-    #include <libavutil/imgutils.h>
+extern "C"
+{
+#include <libavformat/avformat.h>
+#include <libavdevice/avdevice.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libavutil/imgutils.h>
 }
 
 #include "utec/nn/neural_network.h"
@@ -25,27 +23,35 @@ extern "C" {
 #include <opencv2/opencv.hpp>
 
 #if defined(USE_X11)
-    #include <X11/Xlib.h>
-    #include <X11/extensions/XTest.h>
-    #include <X11/keysym.h>
+#include <X11/Xlib.h>
+#include <X11/extensions/XTest.h>
+#include <X11/keysym.h>
+#endif
+
+#if defined(USE_WIN32)
+#include <windows.h>
 #endif
 
 using namespace utec::neural_network;
 
-std::array<int, 9> keySyms = 
 #if defined(USE_X11)
-    {XK_C, XK_F, XK_V, XK_G, XK_B, XK_H, XK_N, XK_J, XK_M};
+std::array<int, 9> keySyms = {XK_C, XK_F, XK_V, XK_G, XK_B, XK_H, XK_N, XK_J, XK_M};
+#elif defined(USE_WIN32)
+std::array<WORD, 9> keySyms = {
+    'C', 'F', 'V', 'G', 'B', 'H', 'N', 'J', 'M'};
 #else
-    {1,2,3,4,5,6,7,8,9};
+std::array<int, 9> keySyms = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 #endif
 std::array<int, 9> elements = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 std::array<std::string, 512> combinations;
 #if defined(USE_X11)
-std::unordered_map<std::string, std::unordered_set<KeySym>> keyCombos;
-Display* display;
+using KeyType = KeySym;
+#elif defined(USE_WIN32)
+using KeyType = WORD;
 #else
-std::unordered_map<std::string, std::unordered_set<int>> keyCombos;
+using KeyType = int;
 #endif
+std::unordered_map<std::string, std::unordered_set<KeyType>> keyCombos;
 
 int res_index = 0;
 int lastcombo = 511;
@@ -63,7 +69,7 @@ void generate_combos(const std::array<int, 9> &elms, int r, int st, std::vector<
     if (cur.size() == r)
     {
         std::string number_str;
-        std::unordered_set<KeySym> keys;
+        std::unordered_set<KeyType> keys;
 
         for (int num : cur)
         {
@@ -84,15 +90,25 @@ void generate_combos(const std::array<int, 9> &elms, int r, int st, std::vector<
     }
 }
 
+#if defined(USE_WIN32)
+void sendWinKey(WORD vk, bool down)
+{
+    INPUT inp = {};
+    inp.type = INPUT_KEYBOARD;
+    inp.ki.wVk = vk;
+    inp.ki.dwFlags = down ? 0 : KEYEVENTF_KEYUP;
+}
+#endif
+
 template <typename T>
 void evaluatePress(Tensor<T, 2> &image, NeuralNetwork<T> &net)
 {
     auto final_pred = net.predict(image);
     size_t pred = 0;
     auto maxv = final_pred(0, 0);
-    
+
     {
-        #pragma omp parallel for
+#pragma omp parallel for
         for (size_t j = 1; j < final_pred.shape()[1]; ++j)
         {
             if (final_pred(0, j) > maxv)
@@ -106,20 +122,33 @@ void evaluatePress(Tensor<T, 2> &image, NeuralNetwork<T> &net)
     if (lastcombo != pred)
     {
 #if defined(USE_X11)
-        if (combinations[lastcombo] != "0" || combinations[pred] == combinations[lastcombo]) {
-            for (KeySym key : keyCombos[combinations[lastcombo]]){
+        if (combinations[lastcombo] != "0" || combinations[pred] == combinations[lastcombo])
+        {
+            for (KeySym key : keyCombos[combinations[lastcombo]])
+            {
                 KeyCode keycode = XKeysymToKeycode(display, key);
                 XTestFakeKeyEvent(display, keycode, False, 0);
             }
             XFlush(display);
-        } 
-        if (combinations[pred] != "0" && combinations[pred] != combinations[lastcombo]) {
-            for (KeySym key : keyCombos[combinations[pred]]){
+        }
+        if (combinations[pred] != "0" && combinations[pred] != combinations[lastcombo])
+        {
+            for (KeySym key : keyCombos[combinations[pred]])
+            {
                 KeyCode keycode = XKeysymToKeycode(display, key);
                 XTestFakeKeyEvent(display, keycode, True, 0);
             }
             XFlush(display);
-        } 
+        }
+#elif defined(USE_WIN32)
+        if (combinations[lastcombo] != "0")
+        {
+            for (WinKey vk : keyCombos[combinations[lastcombo]]) send_key(vk, false);
+        }
+        if (combinations[pred] != "0")
+        {
+            for (WinKey vk : keyCombos[combinations[pred]]) send_key(vk, true);
+        }
 #else
         std::cout << "Not implemented on this platform yet." << std::endl;
 #endif
@@ -237,7 +266,8 @@ int main(int argc, char *argv[])
 
 #if defined(USE_X11)
     display = XOpenDisplay(nullptr);
-    if (!display) {
+    if (!display)
+    {
         std::cerr << "Cannot open display\n";
         return 1;
     }
@@ -305,11 +335,12 @@ int main(int argc, char *argv[])
                     cv::Mat gray, res;
                     cv::cvtColor(mat, gray, cv::COLOR_BGR2GRAY);
                     cv::Rect roi(651, 736, 616, 52);
-                    if(notPopn10) roi.y -= 38;
+                    if (notPopn10)
+                        roi.y -= 38;
                     cv::Mat crop = gray(roi);
                     cv::resize(crop, res, cv::Size(), 0.25, 0.25, cv::INTER_AREA);
                     {
-                        #pragma omp parallel for
+#pragma omp parallel for
                         for (size_t i = 0; i < 154 * 13; i++)
                             imageData(0, i) = res.data[i];
                     }
