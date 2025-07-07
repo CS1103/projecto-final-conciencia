@@ -29,7 +29,7 @@ if (LINUX)
     endif()
 endif()
 
-if (WIN32)
+if (WIN32 OR MINGW OR MSYS)
   target_compile_definitions(${PROJECT_NAME} PRIVATE USE_WIN32)
 endif()
 

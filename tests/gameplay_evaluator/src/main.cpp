@@ -97,6 +97,9 @@ void sendWinKey(WORD vk, bool down)
     inp.type = INPUT_KEYBOARD;
     inp.ki.wVk = vk;
     inp.ki.dwFlags = down ? 0 : KEYEVENTF_KEYUP;
+    UINT sent = SendInput(1, &inp, sizeof(INPUT));
+    if (sent == 0)
+        std::cout << "SendInput failed: " << GetLastError() << std::endl;
 }
 #endif
 
@@ -121,37 +124,44 @@ void evaluatePress(Tensor<T, 2> &image, NeuralNetwork<T> &net)
 
     if (lastcombo != pred)
     {
-#if defined(USE_X11)
         if (combinations[lastcombo] != "0" || combinations[pred] == combinations[lastcombo])
         {
+#if defined(USE_X11)
             for (KeySym key : keyCombos[combinations[lastcombo]])
             {
                 KeyCode keycode = XKeysymToKeycode(display, key);
                 XTestFakeKeyEvent(display, keycode, False, 0);
             }
             XFlush(display);
+#elif defined(USE_WIN32)
+            if (combinations[lastcombo] != "0" || combinations[pred] == combinations[lastcombo])
+            {
+                for (WORD vk : keyCombos[combinations[lastcombo]])
+                    sendWinKey(vk, false);
+            }
+#else
+            std::cout << "Not implemented on this platform yet." << std::endl;
+#endif
         }
         if (combinations[pred] != "0" && combinations[pred] != combinations[lastcombo])
         {
+#if defined(USE_X11)
             for (KeySym key : keyCombos[combinations[pred]])
             {
                 KeyCode keycode = XKeysymToKeycode(display, key);
                 XTestFakeKeyEvent(display, keycode, True, 0);
             }
             XFlush(display);
-        }
 #elif defined(USE_WIN32)
-        if (combinations[lastcombo] != "0")
-        {
-            for (WinKey vk : keyCombos[combinations[lastcombo]]) send_key(vk, false);
-        }
-        if (combinations[pred] != "0")
-        {
-            for (WinKey vk : keyCombos[combinations[pred]]) send_key(vk, true);
-        }
+            if (combinations[pred] != "0" && combinations[pred] != combinations[lastcombo])
+            {
+                for (WORD vk : keyCombos[combinations[pred]])
+                    sendWinKey(vk, true);
+            }
 #else
-        std::cout << "Not implemented on this platform yet." << std::endl;
+            std::cout << "Not implemented on this platform yet." << std::endl;
 #endif
+        }
     }
     lastcombo = pred;
 
@@ -318,8 +328,49 @@ int main(int argc, char *argv[])
     net.load(custom_path);
     std::cout << "Done." << std::endl;
 
-    bool printFrame = (argc > 1 && std::string(argv[1]) == "--printframe");
-    bool notPopn10 = (argc > 1 && std::string(argv[1]) == "--not10");
+    bool printRaw = false;
+    bool printFrame = false;
+    bool notPopn10 = false;
+
+    bool judgingPos = false;
+    bool customPos = false;
+    bool judgingX = false;
+    int customX = -1, customY = -1;
+
+    for (int i = 1; i < argc; ++i) {
+        std::string arg = argv[i];
+        if (judgingPos == true) {
+            int data = stoi(arg);
+            if (judgingX) {
+                customX = data;
+                judgingX = false;
+            } else {
+                customY = data;
+                judgingPos = false;
+            }
+        }
+
+        if (arg == "--printRaw") printRaw = true;
+        else if (arg == "--printframe") printFrame = true;
+        else if (arg == "--not10") notPopn10 = true;
+        else if (arg == "--custompos") {
+            customPos = true;
+            judgingPos = true;
+            judgingX = true;
+        }
+    }
+
+    if (customX == -1 || customY == -1)
+    {
+        if (customX == -1) customX = 651;
+        if (customY == -1) customY = 736;
+    }
+
+    // Now you can use the flags
+    if (printRaw) std::cout << "Raw frame printing enabled" << std::endl;
+    if (printFrame) std::cout << "Modified frame printing enabled" << std::endl;
+    if (notPopn10) std::cout << "Marked as not Pop'n Music 10" << std::endl;
+    if (customPos) std::cout << "Custom position: " << customX << " " << customY << std::endl;
 
     std::cout << "Starting capture (" << fmtName << ") on device " << devName << "... Press ESC to quit.\n";
     while (av_read_frame(fmtCtx, pkt) >= 0)
@@ -334,17 +385,17 @@ int main(int argc, char *argv[])
                     cv::Mat mat(cctx->height, cctx->width, CV_8UC3, bgr->data[0], bgr->linesize[0]);
                     cv::Mat gray, res;
                     cv::cvtColor(mat, gray, cv::COLOR_BGR2GRAY);
-                    cv::Rect roi(651, 736, 616, 52);
-                    if (notPopn10)
-                        roi.y -= 38;
+                    cv::Rect roi(customX, customY, 616, 52);
+                    if (notPopn10) roi.y -= 38;
                     cv::Mat crop = gray(roi);
                     cv::resize(crop, res, cv::Size(), 0.25, 0.25, cv::INTER_AREA);
                     {
-#pragma omp parallel for
+                        #pragma omp parallel for
                         for (size_t i = 0; i < 154 * 13; i++)
                             imageData(0, i) = res.data[i];
                     }
                     if (printFrame) cv::imwrite("./frame.png", res);
+                    if (printRaw) cv::imwrite("./frame_raw.png", mat);
                     evaluatePress(imageData, net);
                 }
             }
