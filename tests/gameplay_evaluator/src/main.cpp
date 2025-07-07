@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (arg == "--printRaw") printRaw = true;
+        if (arg == "--printraw") printRaw = true;
         else if (arg == "--printframe") printFrame = true;
         else if (arg == "--not10") notPopn10 = true;
         else if (arg == "--custompos") {
@@ -395,7 +395,7 @@ int main(int argc, char *argv[])
                             imageData(0, i) = res.data[i];
                     }
                     if (printFrame) cv::imwrite("./frame.png", res);
-                    if (printRaw) cv::imwrite("./frame_raw.png", mat);
+                    if (printRaw) cv::imwrite("./frame_raw.png", mat(roi));
                     evaluatePress(imageData, net);
                 }
             }
