@@ -19,7 +19,7 @@ std::vector<int32_t> combinations;
 std::random_device rd;
 std::mt19937 gen(rd());
 
-int halo_positions[9] = {-2, 38, 70, 110, 142, 182, 214, 246, 286};
+int halo_positions[9] = {-2, 36, 66, 104, 134, 172, 203, 241, 270};
 int kun_positions[9] = {0, 39, 68, 107, 136, 175, 204, 243, 272};
 
 std::vector<int> rand_sample(const std::vector<int> &pop, size_t k){
@@ -75,7 +75,7 @@ void png_overlay(const cv::Mat &src, cv::Mat &dst, int x, int y) {
 void generate_halo(cv::Mat &image, const std::string &pat = ""){
     std::vector<int> picks;
     std::uniform_int_distribution<> am_notes(1,8);
-    if(!pat.empty()) picks = rand_sample(elements, (size_t)am_notes(gen));
+    if(pat.empty()) picks = rand_sample(elements, (size_t)am_notes(gen));
     else picks = combo_fromstr(pat);
     for (int &i : picks){
         cv::Mat halo = i == 4 || i == 6 || i == 2 || i == 8 ? halo_small : halo_big;

@@ -198,6 +198,8 @@ int redoTraining(int epochs)
     net.add_layer(std::make_unique<Softmax<float>>());
 
     std::string custom_path = "";
+    std::cin.clear();
+    std::cin.ignore(100, '\n');
     do
     {
         std::cout << "Input full path: " << std::endl;
@@ -206,6 +208,7 @@ int redoTraining(int epochs)
         {
             std::cout << "Invalid path. Try again." << std::endl;
             custom_path = "";
+            std::cin.clear();
         }
     } while (custom_path.empty());
 
@@ -313,11 +316,15 @@ int main()
               << std::endl;
     while (opt < 1 || opt > 3)
     {
+        std::cin.clear();
         std::cout << "Enter a menu option: ";
         std::cin >> opt;
-        if (opt > 3 || opt < 1)
-            std::cout << "Invalid option. Try again." << std::endl
-                      << std::endl;
+        if (opt > 3 || opt < 1 || std::cin.fail()) {
+            std::cout << "Invalid option. Try again." << std::endl << std::endl;
+            std::cin.clear();
+            std::cin.ignore(80, '\n');
+            opt = 0;
+        }
     }
 
     std::cout << std::endl;
@@ -325,8 +332,17 @@ int main()
     if (opt < 3)
     {
         int eps;
-        std::cout << "Enter amount of epochs: ";
-        std::cin >> eps;
+        do {
+            std::cin.clear();
+            std::cin.ignore(80, '\n');
+            std::cout << "Enter amount of epochs: ";
+            std::cin >> eps;
+            if (std::cin.fail() || eps < 1)
+            {
+                std::cout << "Please enter a valid amount." << std::endl;
+            }
+        } while (std::cin.fail() || eps < 1);
+        
         if (opt == 1)
             mainTraining(eps);
         else
