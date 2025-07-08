@@ -38,6 +38,6 @@ target_link_libraries(${PROJECT_NAME}
     ${FFMPEG_LIBRARIES}
 )
 
-if (LINUX)
+if (LINUX AND NOT X11_FOUND)
     target_link_libraries(${PROJECT_NAME} PkgConfig::PIPEWIRE)
 endif()

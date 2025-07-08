@@ -36,6 +36,7 @@ using namespace utec::neural_network;
 
 #if defined(USE_X11)
 std::array<int, 9> keySyms = {XK_C, XK_F, XK_V, XK_G, XK_B, XK_H, XK_N, XK_J, XK_M};
+Display *display;
 #elif defined(USE_WIN32)
 std::array<WORD, 9> keySyms = {
     'C', 'F', 'V', 'G', 'B', 'H', 'N', 'J', 'M'};
