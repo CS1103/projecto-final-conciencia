@@ -205,6 +205,7 @@ int redoTraining(int epochs)
         if (std::filesystem::is_directory(custom_path) || !std::filesystem::exists(custom_path))
         {
             std::cout << "Invalid path. Try again." << std::endl;
+            custom_path = "";
         }
     } while (custom_path.empty());
 

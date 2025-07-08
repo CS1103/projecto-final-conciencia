@@ -19,7 +19,7 @@ std::vector<int32_t> combinations;
 std::random_device rd;
 std::mt19937 gen(rd());
 
-int halo_positions[9] = {-2, 38, 70, 110, 142, 182, 214, 246, 286};
+int halo_positions[9] = {-2, 37, 68, 107, 139, 179, 211, 243, 283};
 int kun_positions[9] = {0, 39, 68, 107, 136, 175, 204, 243, 272};
 
 std::vector<int> rand_sample(const std::vector<int> &pop, size_t k){
@@ -50,26 +50,38 @@ void generate_combos(const std::vector<int> elms, int r, int st, std::vector<int
         cur.pop_back();
     }    
 }
+ 
+void png_overlay(const cv::Mat& srcRGBA, cv::Mat& dstBGRA, int x, int y) {
+    if (srcRGBA.empty() || dstBGRA.empty()) return;
 
-void png_overlay(const cv::Mat &src, cv::Mat &dst, int x, int y) {
-    for (int yy = 0; yy < src.rows; ++yy) {
-        int dy = yy + y;
-        if (dy < 0 || dy >= dst.rows) continue;
-        for (int xx = 0; xx < src.cols; ++xx) {
-            int dx = xx + x;
-            if (dx < 0 || dx >= dst.cols) continue;
+    cv::Rect dst_rect(x, y, srcRGBA.cols, srcRGBA.rows);
+    cv::Rect dst_roi = dst_rect & cv::Rect(0, 0, dstBGRA.cols, dstBGRA.rows);
+    
+    if (dst_roi.empty()) return;
 
-            cv::Vec4b s = src.at<cv::Vec4b>(yy, xx);
-            float alpha = s[3] / 255.0f;
-            if (alpha <= 0) continue;
+    // calculamos la region aqui
+    cv::Rect src_roi(dst_roi.x - x, dst_roi.y - y, dst_roi.width, dst_roi.height);
+    cv::Mat src = srcRGBA(src_roi);
+    cv::Mat dst = dstBGRA(dst_roi);
 
-            cv::Vec4b &d = dst.at<cv::Vec4b>(dy, dx);
-            for (int c = 0; c < 3; ++c) {
-                d[c] = uchar(s[c] * alpha + d[c] * (1.0f - alpha));
-            }
-            d[3] = uchar((alpha + d[3]/255.0f * (1.0f - alpha)) * 255);
-        }
+    // como aun estamos usando colores aqui, hacemos split a los canales
+    std::vector<cv::Mat> src_channels, dst_channels;
+    cv::split(src, src_channels);
+    cv::split(dst, dst_channels);
+    
+    cv::Mat alpha;
+    src_channels[3].convertTo(alpha, CV_32FC1, 1.0/255.0); // no sabemos el tipo adecuado para el canal, lo dejamos asi
+    cv::Mat inverse_alpha = 1.0 - alpha;
+
+    for (int c = 0; c < 3; c++) {
+        cv::Mat src_float, dst_float;
+        src_channels[c].convertTo(src_float, CV_32FC1);
+        dst_channels[c].convertTo(dst_float, CV_32FC1);
+
+        cv::Mat blended = src_float.mul(alpha) + dst_float.mul(inverse_alpha);
+        blended.convertTo(dst_channels[c], CV_8UC1);
     }
+    cv::merge(dst_channels, dst);
 }
 
 void generate_halo(cv::Mat &image, const std::string &pat = ""){
@@ -103,17 +115,44 @@ void generate_pos(cv::Mat &image, bool garb = false, const std::string &num = ""
     }
 }
 
-int main(int, char**){
-    cv::Mat bg_bgr = cv::imread("./assets/empty_template_smaller.png", cv::IMREAD_COLOR);
-    cv::cvtColor(bg_bgr, background, cv::COLOR_BGR2BGRA);
+int main(int argc, char *argv[]){
+    cv::Mat baseBg = cv::imread("./assets/empty_template_smaller.png", cv::IMREAD_UNCHANGED);
     kun_red = cv::imread("./assets/kuns/red.png", cv::IMREAD_UNCHANGED);
     kun_blue = cv::imread("./assets/kuns/blue.png", cv::IMREAD_UNCHANGED);
-    kun_green = cv::imread("./assets/kuns/green.png", cv::IMREAD_UNCHANGED);
+    kun_green = cv::imread("./assets/kuns/green.png",cv::IMREAD_UNCHANGED);
     kun_yellow = cv::imread("./assets/kuns/yellow.png", cv::IMREAD_UNCHANGED);
     kun_white = cv::imread("./assets/kuns/white.png", cv::IMREAD_UNCHANGED);
 
+    cv::Mat bg_popn8 = cv::imread("./assets/empty_pop8.png", cv::IMREAD_UNCHANGED);
+    cv::Mat bg_popn9 = cv::imread("./assets/empty_pop9.png", cv::IMREAD_UNCHANGED);
+    cv::Mat bg_popn11 = cv::imread("./assets/empty_pop11.png", cv::IMREAD_UNCHANGED);
+
+    background = baseBg.clone();
+
+    if (argc > 1){
+        if (std::string(argv[1]) == "--priority8") {
+            background = bg_popn8.clone();
+            bg_popn8 = baseBg.clone();
+        } else if (std::string(argv[1]) == "--priority9") {
+            background = bg_popn9.clone();
+            bg_popn9 = baseBg.clone();
+        } else if (std::string(argv[1]) == "--priority11") {
+            background = bg_popn11.clone();
+            bg_popn11 = baseBg.clone();
+        }
+    }
+
+    //posiblemente podriamos shufflear el orden por cada combinacion
+    std::vector<cv::Mat> bgVariants = {
+        background,
+        bg_popn8,
+        bg_popn8,
+        bg_popn9,
+        bg_popn11
+    };
+
     halo_big = cv::imread("./assets/halo.png", cv::IMREAD_UNCHANGED);
-    halo_small = cv::imread("./assets/halo.png", cv::IMREAD_UNCHANGED);
+    halo_small = cv::imread("./assets/halo_smaller.png", cv::IMREAD_UNCHANGED);
 
     for (int r = 1; r <= 9; ++r) {
         std::vector<int> current;
@@ -131,28 +170,36 @@ int main(int, char**){
         std::filesystem::create_directory("../results/images"); // results folder
     }
 
+    cv::Mat res, endres, smallres;
+    res.create(background.size(), background.type());
+    endres.create(background.rows, background.cols, CV_8UC1);
+    smallres.create(background.rows/2, background.cols/2, CV_8UC1);
+
     for (int32_t &c : combinations) {
+        std::shuffle(bgVariants.begin(), bgVariants.end(), gen);
         std::string strnum = std::to_string(c);
         for (int d = 0; d < DIFFICULTY_LEVELS; d++) {
             for (int i = 0; i < IMAGE_COUNT_DIFFI + 10; i++){
-                std::uniform_real_distribution<> dist(15, 50);
-                cv::Mat res = background.clone();
-                if ((i > 14 && i < 20) || (i > 21 && i < 25) || (i > 26 && i < 29)) {
-                    if(i % 2 == 0) generate_halo(res);
-                    else {
-                        if (c != 0) generate_halo(res, strnum);
-                    }
+                int ran = i % 5;
+                bgVariants[ran].copyTo(res);
+
+                if (d > 5) {
+                    if (i % 2 == 0) generate_halo(res);
+                    else if (c != 0) generate_halo(res, strnum);
                 }
                 if (i != 0 && i != 10 && i != 15) generate_pos(res, true, strnum);
                 generate_pos(res, false, strnum);
-                std::string fn = "../results/images/" + strnum + "-" + std::to_string(d+1) + "-" + std::to_string((i-25)+1) + ".png";
-                cv::Mat endres, smallres;
+
                 cv::cvtColor(res, endres, cv::COLOR_BGRA2GRAY);
                 if (i % 2 == 0) {
-                    if (i % 4 == 0) endres -= dist(gen);
-                    else endres += dist(gen);
+                    double shift = std::uniform_real_distribution<>(15,50)(gen);
+                    if (i % 4 == 0) endres -= shift;
+                    else endres += shift;
                 }
-                cv::resize(endres, smallres, cv::Size(), 0.5, 0.5, cv::INTER_AREA);
+                
+                cv::resize(endres, smallres, smallres.size(), 0, 0, cv::INTER_AREA);
+                std::string fn = "../results/images/" + strnum + "-" + std::to_string(d+1) + "-" + std::to_string((i-25)+1) + ".png";
+
                 if (i < 20) images.push_back(smallres);
                 else if (i < 25) testimages.push_back(smallres);
                 else cv::imwrite(fn, smallres);

@@ -15,6 +15,7 @@
 #include "utec/nn/nn_optimizer.h"
 
 #include <random>
+#include <filesystem>
 
 using namespace utec::neural_network;
 
@@ -96,8 +97,20 @@ int main() {
     net.add_layer(std::make_unique<Dense<float>>(64, 512, init_w, init_b));
     net.add_layer(std::make_unique<Softmax<float>>());
 
+    std::string custom_path = "";
+    do
+    {
+        std::cout << "Input full path of model: " << std::endl;
+        std::getline(std::cin, custom_path);
+        if (std::filesystem::is_directory(custom_path) || !std::filesystem::exists(custom_path))
+        {
+            std::cout << "Invalid path. Try again." << std::endl;
+            custom_path = "";
+        }
+    } while (custom_path.empty());
+
     std::cout << "Reading model from file... ";
-    net.load("../../model_ep125.nn");
+    net.load(custom_path);
     std::cout << "Done." << std::endl;
 
     std::cout << "Predicting..." << std::endl;

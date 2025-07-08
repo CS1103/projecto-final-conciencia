@@ -317,11 +317,12 @@ int main(int argc, char *argv[])
     std::string custom_path = "";
     do
     {
-        std::cout << "Input full path: " << std::endl;
+        std::cout << "Input full path of model: " << std::endl;
         std::getline(std::cin, custom_path);
         if (std::filesystem::is_directory(custom_path) || !std::filesystem::exists(custom_path))
         {
             std::cout << "Invalid path. Try again." << std::endl;
+            custom_path = "";
         }
     } while (custom_path.empty());
 

@@ -63,6 +63,14 @@ Al compilar, encontrarás con el ejecutable principal (popn_ai) y dos carpetas a
 - (tests/image_evaluator) Test de reconocimiento de imágenes
 - (tests/gameplay_evaluator) Test de gameplay (requiere una ROM de Pop'n Music 10 y el emulador PCSX2)
 
+#### Configuracion del emulador PCSX2 (gameplay_evaluator)
+En el apartado gráfico, configurar la sección de Renderizado (Rendering), para cambiar la resolución nativa del emulador a 3x Nativo (~1080px/FHD). Adicionalmente, en el apartado de controladores, cambiar el de PlayStation 2 por un control de Pop'n Music y configurarlo de la siguiente manera:
+```
+  F   G   H   J
+C   V   B   N   M
+```
+Puedes guiarte a partir del orden que se muestra en el menu de el emulador. De lo contrario, no va a funcionar el test de gameplay.
+
 ---
 
 ### 1. Investigación teórica

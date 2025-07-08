@@ -29,6 +29,8 @@ file(GLOB source_files src/*.cpp)
 find_package(OpenMP REQUIRED)
 find_package(OpenCV REQUIRED)
 
+add_executable(${PROJECT_NAME} ${source_files})
+
 if(MSYS)
   set(NORMALIZED_OMP_LIBS "")
   foreach(_raw_lib IN LISTS OpenMP_CXX_LIBRARIES)
@@ -46,9 +48,10 @@ if(MSYS)
     list(APPEND NORMALIZED_OMP_LIBS "${_lib_norm}")
   endforeach()
   set(omplib ${NORMALIZED_OMP_LIBS} CACHE INTERNAL "")
+  target_link_libraries(${PROJECT_NAME} PUBLIC ${omplib})
 else()
-    set(omplib ${OpenMP_CXX_LIBRARIES} CACHE INTERNAL "")
+  target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)
 endif()
 
-add_executable(${PROJECT_NAME} ${source_files})
-target_link_libraries(${PROJECT_NAME} PUBLIC ${omplib})
+
+
