@@ -75,7 +75,13 @@ Puedes guiarte a partir del orden que se muestra en el menu de el emulador. De l
 
 ### 1. Investigación teórica
 
-* **Objetivo**: Explorar fundamentos y arquitecturas de redes neuronales.
+**Objetivo General**:
+* Desarrollar una red neuronal que pueda predecir los 512 posibles patrones basados en las imágenes del videojuego Pop’n Music.
+**Objetivos específicos**
+* Crear las clases Tensor, IOptimizer, ILayer, Neural Network,  y ILoss. 
+* Crear sus clases hijas ReLU, Dense, MSELoss, BCELoss, CrossEntropyLoss, SGD,  Adam. 
+* Crear imágenes con diferentes patrones para el entrenamiento de la red. 
+* Obtener los pesos calculados para realizar los test y calcular la precisión del modelo.
 
 Para poder diseñar la red neuronal se incluyeron las siguientes clases para poder simular todo el comportamiento de la red neuronal: Tensor, Layer, Dense, ReLU, Loss y por último la clase Neural_Network donde se alojarán todas nuestras funciones. A continuación se detallará el porqué de su inclusión.
 
