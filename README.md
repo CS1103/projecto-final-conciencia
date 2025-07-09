@@ -87,21 +87,54 @@ Puedes guiarte a partir del orden que se muestra en el menu de el emulador. De l
 * Crear imágenes con diferentes patrones para el entrenamiento de la red. 
 * Obtener los pesos calculados para realizar los test y calcular la precisión del modelo.
 
-Para poder diseñar la red neuronal se incluyeron las siguientes clases para poder simular todo el comportamiento de la red neuronal: Tensor, Layer, Dense, ReLU, Loss y por último la clase Neural_Network donde se alojarán todas nuestras funciones. A continuación se detallará el porqué de su inclusión.
+### Desarrollo de componentes claves:
+
+Para poder diseñar la red neuronal se incluyeron las siguientes clases para poder simular todo el comportamiento de la red neuronal: Tensor, Activation, Layer, Dense, Loss, Optimización y, por último, la clase Neural_Network donde se alojarán todas nuestras funciones. A continuación se detalla su inclusión.
 
 En primer lugar, se implementó la clase Tensor para manejar toda la información que ingresa a la red neuronal, es decir los datos con los que uno se entrena y se predice. El motivo por el cual se escogieron los tensores es para poder trabajar con grandes volúmenes de información de forma eficiente, los cuales se componen principalmente de datos binarios. Es por ello que para desarrollar esta clase tomamos como referencia la biblioteca Pytorch. A medida que los modelos aumentan en complejidad y tamaño, los puntos de control distribuidos se convierten en un componente crucial del proceso de entrenamiento. No obstante estos suelen generar importantes demandas de almacenamiento. Para abordar este desafío, la comprensión surge como una solución natural. Dado que los puntos de control se componen principalmente de datos binarios (tensores). (Pytorch, 2025).
-Además como trabajamos con tensores, es esencial el desarrollo de métodos de operaciones con matrices como por ejemplo la función de transposición, multiplicación escalar, tensor broadcasting, sumas y resta, métodos de acceso. Cada uno de ellos escenciales para realizar el cálculo de los pesos y valores de salida en cada capa de la red neuronal, al igual que sus respectivos sesgos.
 
-Las clases layers son las capas que conectadas entre sí, hacen posible que funcione el proceso de entrenamiento. Hay tres partes donde se presentan estas capas: Una capa de entrada, donde se ingresa los valores iniciales del entrenamiento; las capas ocultas, donde se realiza todo el proceso de cálculo y ponderación; por último la capa de salida con los valores de destino que se busca en el entrenamiento. En el entrenamiento se busca que cada valor inicial que ingrese, se procese dentro de las capas ocultas con ponderaciones aleatorias que se van actualizando gradualmente para acercarlas a la capa de destino. Este proceso sigue su curso hasta un punto en que varias capas coincidan con la salida; es decir, tengan valores esperados (IBM, 2021).
-La generación de las capas tienen dos métodos como forward, utilizado para generar un resultado en cada capa acorde al valor anterior que tiene y backward para obtener los valores de los errores en la gradiente en cada capa respecto a los pesos de cada capa. Esto para hacer el proceso de "back propagation". La utilidad de ello es para la actualización de los pesos y continuar con el modelo del entrenamiento.
+Trabajamos simulando los distintos métodos de operaciones con matrices como por ejemplo la función de transposición, multiplicación escalar, tensor broadcasting, lo cual permitió operar entre tensores de distintas dimensiones respetando reglas similares a las de bibliotecas como Numpy o PyTorch. 
 
-Ahora bien, la implementación de la clase Dense, es precisamente para conectar cada una de nuestras capas. Una capa densa, también conocida como capa completamente conectada, es aquella en la que cada nodo está conectado a todos los nodos de la capa anterior (Centro Universitario de la Costa Sur, 2024). Este tipo de capa, es utilizada para que en cada uno de los datos de salida, su cálculo sea dado como resultado de la suma de todos los nodos de las capas anteriores por sus respectivos pesos más un sesgo. De esta manera en cada parte del entrenamiento los pesos modificados influirán en cada de uno de los resultados. La función de activación «f» envuelve el producto escalar entre la entrada de la capa y su matriz de ponderaciones. Tenga en cuenta que las columnas de la matriz de ponderaciones tendrían valores diferentes y se optimizarían durante el entrenamiento del modelo (Builtin, 2025).
+En el marco del proyecto, esto fue crucial para poder representar correctamente tanto las imágenes de entrada generadas a partir de combinaciones de notas del videojuego Pop’n Music, como también los pesos y salidas de cada capa de la red neuronal. Gracias a esta implementación de tensores visuales durante el entrenamiento del modelo, así como aplicar gradientes y operaciones de retropropagación de manera controlada y precisa. 
 
-Se implementó la clase ReLU como función de activación para el proyecto, su objetivo es evaluar cada dato de entrada y comparar si este dato es mayor o igual a 0 o menor. Si es mayor a 0, la función deja tal cual el valor de entrada. Caso contrario, si el valor es un número negativo, lo convierte a 0. Este método es uno de los más utilizados hoy en día para formar redes neuronales más profundas debido a que reduce en gran medida el back propagation. Asimismo, ayuda a mitigar el problema del gradiente evanescente, ocasionado porque la gradiente usada para actualizar nuestros valores en cada época tiene un valor muy pequeño, el cual retrasa el entrenamiento y puede llegar a detenerlo (Canales, 2025).
-En el proyecto al usar esta versión ReLU donde los valores negativos ya no existen se pueden activar algunas neuronas en el proceso de entrenamiento las cuales ayudan a un cálculo mucho más eficiente. Esto resulta aún más útil cuando en el proyecto consideramos los métodos que usamos como Sigmoid y Softmax, una para convertir el valor de entrada en uno dentro del rango de 0 y 1 y la otra para el cálculo de las probabilidades de que los valores insertados pertenezcan a una clase u otra, donde el problema del desvanecimiente es más común. 
-La inclusión de este tipo de función nos permite la generación de una mejor capa densa para la realización del entrenamiento pues se puede escalar a múltiples capas sin hacer sobrecarga computacional.
+En segundo lugar en Activation, se agrupan las funciones de activación utilizadas por las distintas capas de la red neuronal durante el entrenamiento y la inferencia. Las funciones de activación son fundamentales para introducir no linealidad en el modelo, lo que permite que la red aprenda patrones complejos y represente relaciones no triviales en los datos. 
 
----
+En el marco del proyecto, estas funciones permiten que la red reaccione de manera diferenciada según las combinaciones de notas detectadas. La activación correcta en cada capa mejora significativamente la capacidad de clasificación del modelo. Para este proceso, se usa cuatro clases: 
+
+- **ReLU (Rectified Linear Unit)**: evalúa cada dato de entrada y lo deja igual si es mayor que 0, o lo convierte en 0 si es negativo. Es ideal para capas ocultas debido a su eficiencia computacional y porque ayuda a mitigar el problema del gradiente desvanecido, un fenómeno que ocurre cuando los gradientes utilizados para actualizar los pesos se vuelven tan pequeños que impiden el aprendizaje efectivo en redes profundas (Canales, 2025). Este problema puede detener por completo el entrenamiento, especialmente en modelos con muchas capas. El uso de ReLU permite que los gradientes se mantengan estables, acelerando el proceso de aprendizaje y evitando que se “apague” la red.
+
+- **Sigmoid**: transforma cada valor en una probabilidad entre 0 o 1, lo cual es útil para tareas de clasificación binaria o como activación en capas de salida con decisiones dicotómicas. 
+
+- **Softmax**: convierte los valores de salida en una distribución de probabilidad sobre múltiples clases. Es utilizada al final del modelo, donde cada patrón visual puede pertenecer a una clase distinta. 
+
+Cada una de estas funciones de activación hereda de `ILayer<T>` e implementa los métodos `forward()` y `backward()`, que permite aplicar las transformaciones durante la propagación directa y calcular los gradientes respectivos durante la retropropagación. 
+
+En tercer lugar, la clase Dense implementa una capa totalmente conectada, uno de los elementos fundamentales en redes neuronales artificiales. Su función principal es realizar una transformación lineal de la entrada mediante multiplicación de matrices y suma de un bias, antes de aplicar la función de activación. 
+
+Dentro del proyecto, esta clase se encarga de transformar los datos que representan los patrones visuales del videojuego Pop’s Music en representaciones intermedias que pueden ser interpretadas por las siguientes capas. Es decir, permite que la red entienda las combinaciones de notas a través del aprendizaje de pesos y sesgos. De este modo, la clase contiene los siguientes elementos clave: 
+
+- `W` y `b`: representan los pesos y sesgos de la capa. Son inicializados con funciones externas y actualizados durante el entrenamiento. 
+- `dW` y `db`: almacenan las gradientes de los pesos y sesgos, calculados durante la retropropagación. 
+- `forward()`: recibe una entrada `x`, calcula `xWᵗ + b` y devuelve el resultado. Esta operación transforma la entrada para que sea procesada por la siguiente capa.
+- `backward()`: calcula los gradientes (`dW`, `db`) usando la derivada de la pérdida con respecto a la salida de esta capa (`dZ`). Luego, devuelve el gradiente respecto a la entrada para continuar la retropropagación.
+- `update_params()`: utiliza un optimizador (`SGD`, `Adam`, etc.) para ajustar los pesos `W` y sesgos `b` en función de los gradientes.
+
+De esta manera, la red neuronal puede aprender una representación abstracta de las imágenes de entrada y adaptarse a patrones complejos en los datos generados por el entorno de Pop’n Music. 
+
+En cuarto lugar, la clase Neural Network actúa como el núcleo de aprendizaje profundo, ya que permite organizar, entrenar, evaluar y guardar toda la arquitectura construida con capas. En el marco del proyecto, esta clase coordina el aprendizaje de patrones visuales complejos, reconociendo combinaciones específicas de notas que definen el input del jugador. A continuación se presentan las funcionalidades que se requieren para este aprendizaje: 
+
+- `add_layer()`: permite añadir nuevas capas de manera secuencial al modelo. Esto permite construir arquitecturas flexibles que combinan transformaciones lineales (`Dense`) y no lineales (`ReLU`, `Softmax`), necesarias para el aprendizaje jerárquico de los datos.
+- `predict()`: realiza la propagación hacia adelante (*forward propagation*) de una entrada a través de todas las capas del modelo, produciendo una predicción final. En el contexto del juego, esto se traduce en una decisión del modelo respecto a qué clase pertenece una determinada imagen del patrón musical.
+- `train()`: entrena la red usando un algoritmo de retropropagación con descenso del gradiente. En cada época:
+  - Divide los datos en mini-lotes (`batch_size`).
+  - Propaga cada mini-lote con `predict()`.
+  - Calcula el error usando una función de pérdida (`LossType`).
+  - Retropropaga el gradiente con `backward()` y actualiza los parámetros con un optimizador (`OptimizerType`, por defecto `SGD`).
+  - Mide la pérdida y la precisión (*accuracy*) tras cada época.
+- `save()` y `load()`: permiten guardar y restaurar el estado del modelo entrenado. Esto resulta fundamental para no tener que reentrenar el modelo desde cero al reiniciar el juego, y poder cargar una red ya entrenada que reconozca los patrones.
+
+Gracias a esta clase, el videojuego puede aprender a partir de los datos de entrenamiento y generalizar el reconocimiento de nuevas combinaciones de notas. Esto permite construir una experiencia interactiva más robusta, donde el modelo comprende patrones sin necesidad de ser programado explícitamente para cada combinación. 
+
 
 ### 2. Diseño e implementación
 
