@@ -76,8 +76,11 @@ Puedes guiarte a partir del orden que se muestra en el menu de el emulador. De l
 ### 1. Investigación teórica
 
 **Objetivo General**:
+
 * Desarrollar una red neuronal que pueda predecir los 512 posibles patrones basados en las imágenes del videojuego Pop’n Music.
+
 **Objetivos específicos**
+
 * Crear las clases Tensor, IOptimizer, ILayer, Neural Network,  y ILoss. 
 * Crear sus clases hijas ReLU, Dense, MSELoss, BCELoss, CrossEntropyLoss, SGD,  Adam. 
 * Crear imágenes con diferentes patrones para el entrenamiento de la red. 
