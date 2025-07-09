@@ -10,7 +10,7 @@ pkgs.clangStdenv.mkDerivation {
   src = ./.;
 
   nativeBuildInputs = with pkgs; [cmake llvm.clang llvm.lldb llvmPackages.openmp clang-tools];
-  buildInputs = with pkgs; [llvm.libcxx opencv ffmpeg-full pipewire pkg-config glib libsysprof-capture libuuid];
+  buildInputs = with pkgs; [llvm.libcxx opencv ffmpeg-full pipewire pkg-config glib dbus xorg.libX11 xorg.libXtst xorg.libXi];
 
   cmakeFlags = [
     "-DCMAKE_BUILD_TYPE=Release"
