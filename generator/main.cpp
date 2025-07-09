@@ -19,8 +19,10 @@ std::vector<int32_t> combinations;
 std::random_device rd;
 std::mt19937 gen(rd());
 
-int halo_positions[9] = {-2, 36, 66, 104, 134, 172, 203, 241, 270};
+int halo_positions[9] = {-1, 37, 67, 105, 135, 173, 203, 241, 271};
 int kun_positions[9] = {0, 39, 68, 107, 136, 175, 204, 243, 272};
+
+bool invertHalo = false;
 
 std::vector<int> rand_sample(const std::vector<int> &pop, size_t k){
     std::vector<int> result = pop;
@@ -75,7 +77,7 @@ void png_overlay(const cv::Mat &src, cv::Mat &dst, int x, int y) {
 void generate_halo(cv::Mat &image, const std::string &pat = ""){
     std::vector<int> picks;
     std::uniform_int_distribution<> am_notes(1,8);
-    if(pat.empty()) picks = rand_sample(elements, (size_t)am_notes(gen));
+    if(invertHalo ? pat.empty() : !pat.empty()) picks = rand_sample(elements, (size_t)am_notes(gen));
     else picks = combo_fromstr(pat);
     for (int &i : picks){
         cv::Mat halo = i == 4 || i == 6 || i == 2 || i == 8 ? halo_small : halo_big;
@@ -90,7 +92,7 @@ void generate_pos(cv::Mat &image, bool garb = false, const std::string &num = ""
     if (garb) picks = rand_sample(elements, (size_t)am_notes(gen));
     else picks = combo_fromstr(num);
     for (int &i : picks){
-        std::uniform_int_distribution<> am_positions(10, 20);
+        std::uniform_int_distribution<> am_positions(8, 32);
         int combo_x = kun_positions[i-1], combo_y = garb ? 13-am_positions(gen) : 13;
         switch (i) {
             case 1: case 9: png_overlay(kun_white,  image, combo_x, combo_y); break;
@@ -120,6 +122,10 @@ int main(int argc, char* argv[]){
         else if (std::string(argv[1]) == "--popn11") bg_bgr = cv::imread("./assets/empty_pop11.png", cv::IMREAD_COLOR);
     }
 
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "--inverthalo") invertHalo = true;
+    }
+
     cv::cvtColor(bg_bgr, background, cv::COLOR_BGR2BGRA);
 
     for (int r = 1; r <= 9; ++r) {
@@ -141,16 +147,16 @@ int main(int argc, char* argv[]){
     for (int32_t &c : combinations) {
         std::string strnum = std::to_string(c);
         for (int d = 0; d < DIFFICULTY_LEVELS; d++) {
-            for (int i = 0; i < IMAGE_COUNT_DIFFI + 10; i++){
+            for (int i = 0; i < IMAGE_COUNT_DIFFI + 15; i++){
                 std::uniform_real_distribution<> dist(15, 50);
                 cv::Mat res = background.clone();
-                if ((i > 14 && i < 20) || (i > 21 && i < 25) || (i > 26 && i < 29)) {
+                if ((i > 14 && i < 20) || (i > 26 && i < 29) || (i > 31 && i < 35)) {
                     if(i % 2 == 0) generate_halo(res);
                     else {
                         if (c != 0) generate_halo(res, strnum);
                     }
                 }
-                if (i != 0 && i != 10 && i != 15) generate_pos(res, true, strnum);
+                if (i != 0 && i != 20 && i != 30) generate_pos(res, true, strnum);
                 generate_pos(res, false, strnum);
                 std::string fn = "../results/images/" + strnum + "-" + std::to_string(d+1) + "-" + std::to_string((i-25)+1) + ".png";
                 cv::Mat endres, smallres;
@@ -161,7 +167,7 @@ int main(int argc, char* argv[]){
                 }
                 cv::resize(endres, smallres, cv::Size(), 0.5, 0.5, cv::INTER_AREA);
                 if (i < 20) images.push_back(smallres);
-                else if (i < 25) testimages.push_back(smallres);
+                else if (i < 30) testimages.push_back(smallres);
                 else cv::imwrite(fn, smallres);
             }
         }
@@ -196,7 +202,6 @@ int main(int argc, char* argv[]){
     // ^^ todas las imagenes son del mismo tamaño, por lo que podemos hacer que los tests tambien usen esta referencia
     uint32_t count = static_cast<uint32_t>(images.size());
     uint32_t testcount = static_cast<uint32_t>(testimages.size());
-    
 
     out.write(reinterpret_cast<const char*>(&width), sizeof(width));
     out.write(reinterpret_cast<const char*>(&height), sizeof(height));
@@ -212,7 +217,7 @@ int main(int argc, char* argv[]){
     for (const auto& img : testimages) testout.write(reinterpret_cast<const char*>(img.data), width * height);
     for (int32_t &c : combinations) {
         for (int d = 0; d < DIFFICULTY_LEVELS; d++) {
-            for (int i = 0; i < IMAGE_COUNT_DIFFI + 5; i++) {
+            for (int i = 0; i < IMAGE_COUNT_DIFFI + 10; i++) {
                 if (i < 20) label_out.write(reinterpret_cast<const char*>(&c), sizeof(c));
                 else testlabel_out.write(reinterpret_cast<const char*>(&c), sizeof(c));
             }
