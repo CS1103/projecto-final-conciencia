@@ -28,23 +28,24 @@
 
   * Matos Copello Rayhan Derek – 202410377 (Responsable de investigación teórica)
   * Tamara Ureta, Anyeli Azumi – 200900000 (Responsable de investigación teórica)
-  * Alvarado León, Adriana Celeste B – 209900002 (Diseño e implementación)
-  * Mattos Gutierrez, Angel Daniel C – 209900003 (Implementación del modelo)
-  * Aquino Castro Farid Jack D – 202410569 (Análisis y Rendimiento)
-  * Portugal Vilca Julio Cesar E – 202410487 (Documentación y demo)
+  * Alvarado León, Adriana Celeste – 209900002 (Diseño e implementación)
+  * Mattos Gutierrez, Angel Daniel – 202420199 (Implementación del modelo)
+  * Aquino Castro Farid Jack – 202410569 (Análisis y Rendimiento)
+  * Portugal Vilca Julio Cesar – 202410487 (Documentación y demo)
 
 ---
 
 ### Requisitos e instalación
 
 1. **Compilador**: GCC 11 o superior, Clang 19 o superior
-2. **Dependencias**:
-  Generales:
+2. **Dependencias**:\
+  **Generales:**
    * CMake 3.12+
    * OpenCV 4.6.0+
    * OpenMP (Incluido en GCC, instalación adicional en Clang)
    * FFmpeg 7.0+
-  Linux:
+     
+   **Linux:**
    * Xlib (libX11) 
    * libpipewire 0.3+
 3. **Instalación**:
