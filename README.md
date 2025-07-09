@@ -103,12 +103,41 @@ La inclusión de este tipo de función nos permite la generación de una mejor c
 
   ```
   proyecto-final/
-  ├── src/
-  │   ├── layers/
-  │   ├── optimizers/
+  ├── generator/	              #Generador de imágenes de entrada tipo juego rítmico
+  |   ├── assets/              #Recursos visuales: pop-kuns y plantillas
+  |   |	├── kuns/
+  |   |	|   ├── blue.png
+  |   |	|   ├── green.png
+  |   |	|   ├── red.png
+  |   |	|   ├── white.png
+  |   |	|   └── yellow.png
+  |   |	├── halo.png
+  |   |	├── halo_smaller.png
+  |   |	├── empty_template.png
+  |   |	├── empty_template_smaller.png
+  |   |   ├── template.png
+  |   |   └── template_smaller.png
+  |   └── main.cpp             #Código para la generación visual
+  ├── include/                 #Headers del proyecto
+  │   ├── utec/
+  │   │   ├── algebra/         #Implementación del tensor personalizado
+  │   │   │   └── tensor.h
+  │   │   ├── nn/              #Módulos de red neuronal
+  │   │   │   ├── neural_network.h
+  │   │   │   ├── nn_activation.h
+  │   │   │   ├── nn_dense.h
+  │   │   │   ├── nn_interfaces.h
+  │   │   │   ├── nn_loss.h
+  │   │   │   └── nn_optimizer.h
+  ├── src/                     #Entrada principal del programa entrenable
   │   └── main.cpp
-  ├── tests/
-  └── docs/
+  ├── tests/                   #Evaluadores por lote, juego y por imagen
+  │   ├── batch_evaluator/
+  │   │   └── src/main.cpp
+  │   ├── gameplay_evaluator/
+  │   │   └── src/main.cpp
+  │   └── image_evaluator/
+  └── │   └── src/main.cpp
   ```
 
 #### 2.2 Manual de uso y casos de prueba
@@ -139,8 +168,8 @@ La inclusión de este tipo de función nos permite la generación de una mejor c
 
 * **Métricas de ejemplo**:
 
-  * Iteraciones: 1000 épocas.
-  * Tiempo total de entrenamiento: 2m30s.
+  * Iteraciones: 150 épocas.
+  * Tiempo total de entrenamiento: 1h03m15s.
   * Precisión final: 92.5%.
 * **Ventajas/Desventajas**:
 
