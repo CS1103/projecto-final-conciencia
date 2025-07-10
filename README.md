@@ -267,7 +267,7 @@ Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación
 #### 2.1 Arquitectura de la solución
 
 * **Patrones de diseño**: ejemplo: Factory para capas, Strategy para optimizadores.
-* **Estructura de carpetas (ejemplo)**:
+* **Estructura de carpetas**:
 
   ```
 proyecto-final/
@@ -326,6 +326,7 @@ Manual de uso y casos de prueba
 > tests/image_evaluator, imagen por imagen
 > tests/batch_evaluator, para conocer la precisión respecto a toda la data
 
+---
 
 ### 3. Ejecución
 
