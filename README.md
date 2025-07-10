@@ -266,10 +266,9 @@ Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación
 
 #### 2.1 Arquitectura de la solución
 
-* **Patrones de diseño**: ejemplo: Factory para capas, Strategy para optimizadores.
 * **Estructura de carpetas**:
 
-  ``` bash
+``` bash
 proyecto-final/
 ├── generator/	              #Generador de imágenes de entrada tipo juego rítmico
 |   ├── assets/              #Recursos visuales: pop-kuns y plantillas
@@ -314,18 +313,57 @@ proyecto-final/
 │   │   └── src/main.cpp
 │   └── image_evaluator/
 │       └── src/main.cpp
-  ```
+```
 ---
 
 #### 2.2 Manual de uso y casos de prueba
 
 Manual de uso y casos de prueba
 
-> Generamos las imágenes con main.cpp ubicado en generator, estas serán almacenadas en result de cmake-debug-build
-> Entrenamos el modelo con src/main.cpp, eligiendo la cantidad de épocas deseada. Los modelos se almacenarán en cmake-debug-build 
+Generamos las imágenes con main.cpp ubicado en generator, estas serán almacenadas en result de cmake-debug-build
+Entrenamos el modelo con src/main.cpp, eligiendo la cantidad de épocas deseada. Los modelos se almacenarán en cmake-debug-build 
 > Probamos los modelos con:
-> tests/image_evaluator, imagen por imagen
-> tests/batch_evaluator, para conocer la precisión respecto a toda la data
+tests/image_evaluator, imagen por imagen
+tests/batch_evaluator, para conocer la precisión respecto a toda la data
+> Rutas específicas:
+
+  ```
+Input full path of model:
+...\proyecto-progra3\cmake-build-debug\model_ep150.nn
+Reading model from file... Done.
+Input a directory (Send R key to use default path):
+R
+Reading from results directory (../../results/images)...
+Type filename + extension to predict (Send E key to exit):
+1-1-4.png
+                                    .,,,,,,,,,,,,.
+
+                                  .:OX##########XO:.
+    .,,,,,,.
+                                  .:OX##########XO:.
+  .:oO,XX,Oo:.
+                                  .oOX##########XOo.
+  :oOX XX XOo:
+                                    .,,,,,,,,,,,,.
+ .:OXXoXXoXXO:.
+                                     ............
+ .:OXX####XXO:.
+  ..,,,::::,,,..                      ..........
+ .:OXX####XXO:.
+ ,:oO:XXXXXX:Oo:,
+ .:OOXXXXXXXO:.
+.,oOX OOOOOO XOo,.
+  :oOOXXXXXOo:
+.oOX#o######o#XOo.
+  .:oOOXXXOo:.
+,oOX##########XOo,OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOXXXOOOOOOOOOOOOOOOOOOOOOO:
+,oXX##########XXo,OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:
+,oOXXX######XXXOo,......................................................................................................
+................................
+ Predicted pattern: 18
+  ```
 
 ---
 
