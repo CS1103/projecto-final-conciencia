@@ -310,16 +310,14 @@ Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación
 
 #### 2.2 Manual de uso y casos de prueba
 
-* **Cómo ejecutar**: `./build/neural_net_demo input.csv output.csv`
-* **Casos de prueba**:
+Manual de uso y casos de prueba
 
-  * Test unitario de capa densa.
-  * Test de función de activación ReLU.
-  * Test de convergencia en dataset de ejemplo.
+Generamos las imágenes con main.cpp ubicado en generator, estas serán almacenadas en result de cmake-debug-build
+Entrenamos el modelo con src/main.cpp, eligiendo la cantidad de épocas deseada. Los modelos se almacenarán en cmake-debug-build 
+Probamos los modelos con:
+tests/image_evaluator, imagen por imagen
+tests/batch_evaluator, para conocer la precisión respecto a toda la data
 
-> *Personalizar rutas, comandos y casos reales.*
-
----
 
 ### 3. Ejecución
 
