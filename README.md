@@ -27,12 +27,12 @@
 * **Integrantes**:
 
   * Matos Copello Rayhan Derek – 202410377 (Responsable de investigación teórica)
-  * Tamara Ureta, Anyeli Azumi – 200900000 (Responsable de investigación teórica)
+  * Tamara Ureta, Anyeli Azumi – 202410590 (Responsable de investigación teórica)
   * Alvarado León, Adriana Celeste – 209900002 (Diseño e implementación)
   * Mattos Gutierrez, Angel Daniel – 202420199 (Implementación del modelo)
   * Aquino Castro Farid Jack – 202410569 (Análisis y Rendimiento)
   * Portugal Vilca Julio Cesar – 202410487 (Documentación y demo)
-
+> **Nota**: El informe completo se encuentra adjunto en el repositorio del proyecto.
 ---
 
 ### Requisitos e instalación
@@ -87,7 +87,97 @@ Puedes guiarte a partir del orden que se muestra en el menu de el emulador. De l
 * Crear imágenes con diferentes patrones para el entrenamiento de la red. 
 * Obtener los pesos calculados para realizar los test y calcular la precisión del modelo.
 
-### Desarrollo de componentes claves:
+## Marco Teórico
+
+### 1.1 Redes Neuronales Artificiales
+
+Las redes neuronales artificiales (RNA) son simulaciones informáticas basadas en el funcionamiento del cerebro humano. Estas redes se componen de un grupo de nodos conocidos como neuronas, que se agrupan en niveles y se vinculan entre ellos mediante enlaces conocidos como pesos sinápticos que pueden ser modificados. Cada neurona acoge señales de entrada, las maneja a través de una función de activación y produce una salida que puede ser enviada a otras neuronas en niveles sucesivos [1].
+
+Una red neuronal común se segmenta en tres componentes básicos. La capa de entrada acoge la información en bruto que será procesada, como pueden ser imágenes o señales. Las capas encubiertas llevan a cabo cálculos y transformaciones no lineales que facilitan a la red el aprendizaje de representaciones intermedias y patrones complicados. Finalmente, la capa de salida proporciona la predicción definitiva, la cual puede ser una clasificación, una probabilidad o un volumen determinado [2].
+
+El proceso de aprendizaje en una red neuronal implica la modificación de los pesos de sus conexiones con el fin de reducir la discrepancia entre la salida producida y el valor verdadero anticipado. Este proceso se lleva a cabo a través de algoritmos de optimización, siendo el algoritmo de retropropagación del error (backpropagation) el más empleado. Este calcula la manera en que cada peso debe ser modificado para disminuir el error total [3]. Estas modificaciones están dirigidas por una función de pérdida, que evalúa el grado de error en cada época. Mediante este ciclo de capacitación, la red incrementa su habilidad para realizar pronósticos exactos.
+
+Cuando las redes neuronales aumentan su número de capas ocultas, se convierten en redes profundas, lo que permite que aprendan representaciones jerárquicas de los datos. Las redes profundas han demostrado un desempeño sobresaliente en tareas complejas como el reconocimiento de imágenes, la traducción automática y el análisis de voz [1].
+
+#### 1.1.1 Investigación teórica: fundamentos y arquitecturas
+
+El estudio de las redes neuronales artificiales tiene sus raíces en la década de 1940 con el modelo de McCulloch y Pitts, pero fue recién en los años 80 y 90 que se consolidaron algoritmos como el perceptrón multicapa (MLP) y el backpropagation. Con el avance del hardware y el crecimiento de datasets, se introdujeron arquitecturas más profundas y especializadas.
+
+Entre las arquitecturas más representativas se encuentran:
+
+- **MLP (Multi-Layer Perceptron)**: compuesta por capas totalmente conectadas. Es la base del modelo usado en este proyecto y se caracteriza por transformar entradas vectoriales mediante pesos, biases y funciones de activación.
+- **CNN (Convolutional Neural Network)**: especializada en el análisis de imágenes. Utiliza filtros para detectar patrones locales y jerárquicos.
+- **RNN (Recurrent Neural Network)**: diseñada para datos secuenciales, como texto o audio. Posee conexiones recurrentes que permiten conservar memoria del estado anterior.
+
+Para el entrenamiento de estas redes se utiliza el algoritmo de retropropagación, propuesto en su forma moderna por Rumelhart, Hinton y Williams (1986), que calcula el gradiente de la función de pérdida respecto a cada peso mediante la regla de la cadena.
+
+Además, se requiere un algoritmo de optimización que ajuste los pesos. En este proyecto se usaron dos: **SGD** y **Adam**, seleccionados por su bajo costo computacional y capacidad de adaptación a diferentes tasas de aprendizaje, respectivamente.
+
+Esta base teórica permitió estructurar el desarrollo modular del sistema en C++, reproduciendo comportamientos esenciales del aprendizaje profundo mediante clases y estructuras propias inspiradas en bibliotecas como **PyTorch** y **TensorFlow**.
+
+---
+
+### 1.2 Visión por Computadora
+
+La visión computacional es una disciplina de la inteligencia artificial que permite a los ordenadores analizar y procesar imágenes o vídeos con el objetivo de recopilar datos relevantes del entorno [4]. Esta disciplina tiene como objetivo emular la capacidad humana para entender lo que se percibe, pero a través de algoritmos y esquemas matemáticos.
+
+En este proyecto, se utiliza la visión computacional para examinar imágenes producidas a partir de un juego de ritmo japonés. El sistema tiene que reconocer patrones visuales que simbolizan distintas combinaciones de notas musicales que se descienden por carriles determinados, replicando la experiencia de juegos como *Pop'n Music* o *Beatmania IIDX*.
+
+Para facilitar la interpretación de las imágenes, se utilizan las siguientes técnicas de preprocesamiento:
+
+- **Conversión a escala de grises**: Este procedimiento elimina la información de color y mantiene únicamente los niveles de intensidad de cada píxel. Según Goodfellow, Bengio y Courville [3], esto reduce significativamente la complejidad computacional, ya que la red neuronal trabaja con menos información redundante, centrándose únicamente en los patrones estructurales.
+
+- **Reducción de tamaño**: Consiste en disminuir la resolución de las imágenes para optimizar tanto el almacenamiento como la velocidad de procesamiento. Este enfoque es especialmente útil cuando se trabaja con grandes volúmenes de datos, permitiendo entrenar modelos más rápidamente sin sacrificar demasiado la calidad de las características relevantes.
+
+- **Normalización**: Hace referencia a incrementar los valores de los píxeles dentro del intervalo [0, 1]. Este procedimiento es esencial para consolidar el proceso de entrenamiento, puesto que contribuye a que las funciones de activación y los algoritmos de optimización funcionen de forma más eficaz [3].
+
+---
+
+### 1.3 Generación de Datos Sintéticos
+
+La generación de datos sintéticos consiste en la creación de ejemplos artificiales mediante algoritmos o modelos matemáticos, en lugar de recolectarlos directamente del entorno real [5]. Este enfoque es especialmente útil cuando los datos reales son escasos, costosos de adquirir, o presentan restricciones legales y éticas relacionadas con la privacidad [6].
+
+En el contexto de este proyecto, se diseñó un generador en C++ utilizando OpenCV, capaz de sintetizar imágenes de un juego de ritmo japonés con diferentes combinaciones de notas. Las principales ventajas de este método son:
+
+- **Escalabilidad y costo reducido**: Una vez desarrollado el entorno sintético, es posible generar grandes volúmenes de datos de forma automática y económica [7].
+
+- **Etiquetado automático y exacto**: Cada imagen generada se acompaña de etiquetas precisas, lo cual evita errores comunes en el etiquetado manual.
+
+- **Control de variabilidad**: Se puede simular ruido visual, diferentes niveles de dificultad y combinaciones específicas, garantizando un dataset robusto frente a condiciones reales [6].
+
+Investigaciones como la realizada por Lu et al. [6] destacan cómo los datos artificiales facilitan la superación de los desafíos de calidad y privacidad. Además, Bauer et al. [7] indican que las herramientas fundamentadas en redes neuronales, como **GANs**, **modelos de difusión** y **transformers**, permiten el control de la generación de datos en contextos complejos.
+
+---
+
+### 1.4 Funciones de Activación
+
+Las funciones de activación introducen la no linealidad necesaria para que una red neuronal aprenda relaciones complejas entre los datos. Sin estas funciones, la red se comportaría como una combinación lineal, lo cual limitaría drásticamente su capacidad de modelado.
+
+- **ReLU (Rectified Linear Unit)**: definida como 𝑓(𝑥) = max(0, 𝑥), fue introducida originalmente por Kunihiko Fukushima en 1969 [9]. Su uso modernizado en redes profundas se consolidó en 2011 por su capacidad para evitar el problema del gradiente desvanecido, acelerar el aprendizaje y generar activaciones esparsas [10], [11].
+
+- **Softmax**: transforma un vector de valores reales en una distribución de probabilidad cuya suma es 1. Está relacionada con la distribución de Boltzmann en mecánica estadística [12], formalizada en el aprendizaje automático para clasificación multiclase [13]. Es clave en la capa de salida y permite aplicar la entropía cruzada como función de pérdida [3].
+
+---
+
+### 1.5 Algoritmos de Optimización
+
+Los algoritmos de optimización son esenciales en el entrenamiento de redes neuronales artificiales, ya que permiten ajustar los pesos de la red con el objetivo de minimizar la función de pérdida [15].
+
+- **Descenso del Gradiente Estocástico (SGD)**: destaca por su eficiencia computacional al trabajar con mini batches. Sin embargo, puede quedar atrapado en mínimos locales o generar oscilaciones [16].
+
+- **Adam (Adaptive Moment Estimation)**: propuesto por Kingma y Ba [17], combina momentum y RMSProp para ajustar tasas de aprendizaje por parámetro. Su fortaleza radica en manejar datos complejos y lograr convergencia rápida y estable.
+
+**Comparación**: Aunque Adam suele ofrecer resultados iniciales superiores, estudios como el de Wilson et al. [18] sugieren que en ciertos casos SGD puede generar soluciones más generalizables a largo plazo.
+
+---
+
+### 1.6 Sobreajuste y Técnicas de Regularización
+
+Durante el entrenamiento de una red neuronal, es común que el modelo se ajuste demasiado a los datos de entrenamiento, lo que reduce su capacidad para generalizar ante datos nuevos. Este fenómeno se conoce como **sobreajuste (overfitting)**.
+
+En el presente proyecto, este riesgo implica que el modelo podría funcionar bien solo con imágenes iguales a las entrenadas, fallando ante leves variaciones. Por ello, se emplean técnicas de **regularización** para evitarlo y asegurar que el modelo reconozca patrones nuevos con precisión durante la inferencia.
+
+## Desarrollo de componentes claves:
 
 Para diseñar e implementar la red neuronal se incluyeron las siguientes clases para poder simular todo su comportamiento, estas son: Tensor, Activation, Layer, Dense, Loss, Optimización y la clase Neural_Network donde se alojarán todas nuestras funciones. A continuación se detalla su inclusión.
 
@@ -240,18 +330,6 @@ Gracias a esta clase, el videojuego puede aprender a partir de los datos de entr
 | Documentación y demo        | Portugal Vilca Julio Cesar              | Tutorial y video demo           |
 
 ---
-
-### Datos generales
-
-- **Tema**: Redes Neuronales en AI
-- **Grupo**: `group_3_custom_name`
-- **Integrantes**:
-  - Matos Copello Rayhan Derek – 202410377 (Responsable de investigación teórica)
-  - Tamara Ureta, Anyeli Azumi – 200900000 (Responsable de investigación teórica)
-  - Alvarado León, Adriana Celeste – 209900002 (Diseño e implementación)
-  - Mattos Gutierrez, Angel Daniel – 202420199 (Implementación del modelo)
-  - Aquino Castro Farid Jack – 202410569 (Análisis y Rendimiento)
-  - Portugal Vilca Julio Cesar – 202410487 (Documentación y demo)
 
 ### 6. Conclusiones
 
