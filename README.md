@@ -258,6 +258,7 @@ Por último, la clase NeuralNetwork representa el modelo principal de red neuron
 La actualización de pesos con el optimizador (SGD por defecto).
 Este entrenamiento se realiza por varias épocas, lo que permite que el modelo aprenda progresivamente a clasificar correctamente las combinaciones musicales.
 - `save/load`: implementa funciones para guardar y cargar los pesos del modelo entrenado. Así se evita tener que entrenarlo cada vez, y se puede reutilizar en futuras sesiones del juego.
+
 Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación está encapsulado en un solo objeto, lo que permite entrenar y reutilizar modelos completos de manera eficiente. En el contexto del proyecto, esta clase facilita el reconocimiento preciso de patrones musicales, mejorando progresivamente su capacidad predictiva con cada época de entrenamiento.
 
 
