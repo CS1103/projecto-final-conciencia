@@ -229,6 +229,37 @@ En quinto lugar, la clase Neural Network actúa como el núcleo de aprendizaje p
 
 Gracias a esta clase, el videojuego puede aprender a partir de los datos de entrenamiento y generalizar el reconocimiento de nuevas combinaciones de notas. Esto permite construir una experiencia interactiva más robusta, donde el modelo comprende patrones sin necesidad de ser programado explícitamente para cada combinación. 
 
+En quinto lugar la clase Loss define las funciones de pérdida utilizadas durante el entrenamiento de la red neuronal. Estas funciones son importantes debido a que permiten calcular la diferencia entre las predicciones generadas por el modelo y los valores esperados. En el contexto del presente proyecto, que busca entrenar una red neuronal capaz de reconocer patrones visuales del videojuego Pop’n Music, la presente clase cumple un rol fundamental en el aprendizaje automático. Así, este módulo define las funciones de pérdida que permiten cuantificar que tan acertada es la predicción del modelo al clasificar una imagen generada con combinaciones de notas respecto a su etiqueta real. 
+Durante el entrenamiento de la red neuronal, al mostrarle una imagen que representa una secuencia del juego, se compara la salida predicha con la etiqueta correcta. La función de pérdida mide esta diferencia, devolviendo un valor numérico que indica cuán lejos estuvo la predicción del resultado esperado. En este caso, la clase incluye tres implementaciones especializadas: MSELoss, útil para tareas de regresión; BCELoss, aplicada cuando se trata de decisiones binarias; CrossEntropyLoss, más utilizada debido a que el modelo realiza una clasificación multiclase entre los diferentes tipos de combinaciones posibles en las imágenes del juego. 
+De este modo, cada una de estas funciones de pérdida implementa dos métodos clave: loss(), que devuelve el valor de error, y loss_gradient(), que permite retropropagar dicho error para ajustar los pesos de la red. Gracias a esta retroalimentación, el modelo mejora su precisión en la clasificación de nuevos patrones generados a partir del entorno visual de Pop’n Music. 
+
+En sexto lugar, la clase Optimización se utiliza para implementar los algoritmos de optimización que se encargan de actualizar los pesos de la red neuronal durante el proceso de entrenamiento. Para el presente proyecto, estos algoritmos permiten que la red aprenda a clasificar correctamente los patrones al minimizar el valor de la función pérdida. El archivo define dos optimizadores fundamentales: 
+- `SGD` (Stochastic Gradient Descent): se trata de un optimizador clásico que ajusta cada peso restando una fracción proporcional a su gradiente. Su simplicidad lo hace rápido, pero puede tener dificultades en converger cuando el espacio de parámetros es irregular o tiene muchos mínimos locales. 
+- `Adam` (Adaptive Moment Estimation): es un optimizador más sofisticado que combina el enfoque de momento y adaptación de tasa de aprendizaje. Almacena promedios móviles de los gradientes (primer momento m) y de sus cuadrados (segundo momento v) y los corrige en cada paso de actualización.  Esto permite una convergencia más rápida y estable, especialmente útil en entornos como el nuestro donde los datos visuales pueden ser ruidosos o variados.
+
+Ambas clases implementan el método update(), que recibe los parámetros actuales y sus respectivos gradientes, y luego los actualiza con base en la lógica del optimizador correspondiente. 
+
+En séptimo lugar se implementó un archivo denominado “interfaces” que define las interfaces principales que sirven como base para el diseño modular de toda la red neuronal implementada. Estas interfaces permiten separar responsabilidades entre capas, funciones de pérdida y optimizadores, facilitando que cada componente sea reutilizable e intercambiable en distintos contextos. 
+La interfaz ILayer<T> es implementada por todas las capas del modelo, incluyendo las densas (Dense) y las de activación (ReLU, Sigmoid, Softmax). Esta interfaz obliga a definir dos funciones principales:
+- `forward()`: se encarga de propagar los datos de entrada hacia adelante, capa por capa.
+- `backward()`: se utiliza en la retropropagación del error para ajustar los pesos en función de los gradientes.
+- `update_params()`: método opcional que permite actualizar los parámetros entrenables como pesos y sesgos cuando corresponde.
+Por otro lado, la interfaz ILoss<T, DIMS> define el comportamiento de las funciones de pérdida como CrossEntropyLoss. Estas funciones permiten medir cuán lejos están las predicciones del modelo respecto a las etiquetas reales. Esta interfaz exige definir el método loss(), que calcula el error de predicción, y loss_gradient(), que genera el gradiente necesario para que la red aprenda durante el entrenamiento.
+Finalmente, la interfaz IOptimizer<T> es implementada por optimizadores como SGD o Adam, y se encarga de actualizar los pesos y sesgos del modelo según los gradientes calculados. En nuestro caso, permite que la red neuronal aprenda a clasificar correctamente los patrones visuales asociados a combinaciones musicales, ajustando los parámetros después de cada retropropagación.
+
+Por último, la clase NeuralNetwork representa el modelo principal de red neuronal que orquesta el flujo completo de datos a través de todas las capas definidas y permite entrenar, predecir y guardar/cargar el modelo. Así, actúa como el núcleo funcional del sistema inteligente. Sus principales funcionales se divide en las siguientes partes: 
+- `add_layer`: permite ir agregando las capas (como Dense, ReLU, Softmax, etc.) de forma modular. Así, se puede diseñar la arquitectura del modelo de manera flexible y personalizada para nuestro juego.
+- `predict`: ejecuta una propagación hacia adelante (forward) pasando la entrada por todas las capas agregadas. Esto es usado tanto durante el entrenamiento como durante la etapa de inferencia, cuando se desea predecir la clase correspondiente a una nueva entrada musical.
+- `train`: realiza el proceso de entrenamiento mediante:
+  - La generación de batches con los datos de entrada y etiquetas.
+  - El cálculo de la predicción usando predict.
+  - La evaluación del error con una función de pérdida (como CrossEntropyLoss).
+  - La retropropagación del gradiente con backward
+La actualización de pesos con el optimizador (SGD por defecto).
+Este entrenamiento se realiza por varias épocas, lo que permite que el modelo aprenda progresivamente a clasificar correctamente las combinaciones musicales.
+- `save/load`: implementa funciones para guardar y cargar los pesos del modelo entrenado. Así se evita tener que entrenarlo cada vez, y se puede reutilizar en futuras sesiones del juego.
+Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación está encapsulado en un solo objeto, lo que permite entrenar y reutilizar modelos completos de manera eficiente. En el contexto del proyecto, esta clase facilita el reconocimiento preciso de patrones musicales, mejorando progresivamente su capacidad predictiva con cada época de entrenamiento.
+
 
 ### 2. Diseño e implementación
 
