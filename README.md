@@ -28,7 +28,7 @@
 
   * Matos Copello Rayhan Derek – 202410377 (Responsable de investigación teórica)
   * Tamara Ureta, Anyeli Azumi – 202410590 (Responsable de investigación teórica)
-  * Alvarado León, Adriana Celeste – 209900002 (Diseño e implementación)
+  * Alvarado León, Adriana Celeste – 202420154 (Diseño e implementación)
   * Mattos Gutierrez, Angel Daniel – 202420199 (Implementación del modelo)
   * Aquino Castro Farid Jack – 202410569 (Análisis y Rendimiento)
   * Portugal Vilca Julio Cesar – 202410487 (Documentación y demo)
@@ -270,53 +270,61 @@ Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación
 * **Estructura de carpetas (ejemplo)**:
 
   ```
-  proyecto-final/
-  ├── generator/	              #Generador de imágenes de entrada tipo juego rítmico
-  |   ├── assets/              #Recursos visuales: pop-kuns y plantillas
-  |   |	├── kuns/
-  |   |	|   ├── blue.png
-  |   |	|   ├── green.png
-  |   |	|   ├── red.png
-  |   |	|   ├── white.png
-  |   |	|   └── yellow.png
-  |   |	├── halo.png
-  |   |	├── halo_smaller.png
-  |   |	├── empty_template.png
-  |   |	├── empty_template_smaller.png
-  |   |   ├── template.png
-  |   |   └── template_smaller.png
-  |   └── main.cpp             #Código para la generación visual
-  ├── include/                 #Headers del proyecto
-  │   ├── utec/
-  │   │   ├── algebra/         #Implementación del tensor personalizado
-  │   │   │   └── tensor.h
-  │   │   ├── nn/              #Módulos de red neuronal
-  │   │   │   ├── neural_network.h
-  │   │   │   ├── nn_activation.h
-  │   │   │   ├── nn_dense.h
-  │   │   │   ├── nn_interfaces.h
-  │   │   │   ├── nn_loss.h
-  │   │   │   └── nn_optimizer.h
-  ├── src/                     #Entrada principal del programa entrenable
-  │   └── main.cpp
-  ├── tests/                   #Evaluadores por lote, juego y por imagen
-  │   ├── batch_evaluator/
-  │   │   └── src/main.cpp
-  │   ├── gameplay_evaluator/
-  │   │   └── src/main.cpp
-  │   └── image_evaluator/
-  └── │   └── src/main.cpp
+proyecto-final/
+├── generator/	              #Generador de imágenes de entrada tipo juego rítmico
+|   ├── assets/              #Recursos visuales: pop-kuns y plantillas
+|   |	├── kuns/
+|   |	|   ├── blue.png
+|   |	|   ├── green.png
+|   |	|   ├── red.png
+|   |	|   ├── white.png
+|   |	|   └── yellow.png
+|   |	├── halo.png
+|   |	├── halo_smaller.png
+|   |	├── empty_template.png
+|   |	├── empty_template_smaller.png
+|   |	├── empty_pop8.png   #Fondo de la versión 8 del videojuego
+|   |	├── empty_pop9.png   #Fondo de la versión 9 del videojuego
+|   |	├── empty_pop11.png  #Fondo de la versión 11 del videojuego
+|   |   ├── template.png
+|   |   └── template_smaller.png
+|   └── main.cpp             #Código para la creación de imágenes representativas del juego
+├── include/                 #Headers del proyecto
+│   ├── utec/
+│   │   ├── algebra/         #Implementación del tensor personalizado
+│   │   │   └── tensor.h
+│   │   ├── nn/              #Módulos de red neuronal
+│   │   │   ├── neural_network.h
+│   │   │   ├── nn_activation.h
+│   │   │   ├── nn_dense.h
+│   │   │   ├── nn_interfaces.h
+│   │   │   ├── nn_loss.h
+│   │   │   └── nn_optimizer.h
+│   ├── training/
+│   │   └── trainer.h        
+│   ├── utils/
+│   │   ├── number.h        #genera grupos de kuns
+│   │   ├── print.h         #imprime la imagen en la terminal con char
+├── src/                     #Entrada principal del programa entrenable
+│   └── main.cpp
+├── tests/                   #Evaluadores por lote, juego y por imagen
+│   ├── batch_evaluator/
+│   │   └── src/main.cpp
+│   ├── gameplay_evaluator/
+│   │   └── src/main.cpp
+│   └── image_evaluator/
+│       └── src/main.cpp
   ```
 
 #### 2.2 Manual de uso y casos de prueba
 
 Manual de uso y casos de prueba
 
-Generamos las imágenes con main.cpp ubicado en generator, estas serán almacenadas en result de cmake-debug-build
-Entrenamos el modelo con src/main.cpp, eligiendo la cantidad de épocas deseada. Los modelos se almacenarán en cmake-debug-build 
-Probamos los modelos con:
-tests/image_evaluator, imagen por imagen
-tests/batch_evaluator, para conocer la precisión respecto a toda la data
+> Generamos las imágenes con main.cpp ubicado en generator, estas serán almacenadas en result de cmake-debug-build
+> Entrenamos el modelo con src/main.cpp, eligiendo la cantidad de épocas deseada. Los modelos se almacenarán en cmake-debug-build 
+> Probamos los modelos con:
+> tests/image_evaluator, imagen por imagen
+> tests/batch_evaluator, para conocer la precisión respecto a toda la data
 
 
 ### 3. Ejecución
