@@ -16,9 +16,9 @@ extern "C"
 #include <libavutil/imgutils.h>
 }
 
-#include "utec/nn/neural_network.h"
-#include "utec/nn/nn_activation.h"
-#include "utec/nn/nn_dense.h"
+#include "utils/print.h"
+#include "training/trainer.h"
+#include "utec/algebra/Tensor.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -32,7 +32,9 @@ extern "C"
 #include <windows.h>
 #endif
 
-using namespace utec::neural_network;
+using namespace utec::algebra;
+using namespace popn::utils;
+using namespace training;
 
 #if defined(USE_X11)
 std::array<int, 9> keySyms = {XK_C, XK_F, XK_V, XK_G, XK_B, XK_H, XK_N, XK_J, XK_M};
@@ -105,23 +107,9 @@ void sendWinKey(WORD vk, bool down)
 #endif
 
 template <typename T>
-void evaluatePress(Tensor<T, 2> &image, NeuralNetwork<T> &net)
+void evaluatePress(Tensor<T, 2> &image, Trainer &net)
 {
-    auto final_pred = net.predict(image);
-    size_t pred = 0;
-    auto maxv = final_pred(0, 0);
-
-    {
-#pragma omp parallel for
-        for (size_t j = 1; j < final_pred.shape()[1]; ++j)
-        {
-            if (final_pred(0, j) > maxv)
-            {
-                maxv = final_pred(0, j);
-                pred = j;
-            }
-        }
-    }
+    size_t pred = net.predict_image(image);
 
     if (lastcombo != pred)
     {
@@ -288,48 +276,6 @@ int main(int argc, char *argv[])
     combinations[lastcombo] = "0";
     keyCombos["0"] = {0};
 
-    auto init_w = [&](auto &W)
-    {
-        std::mt19937 gen(42);
-        float fan_in = W.shape()[1];
-        float fan_out = W.shape()[0];
-        float scale = std::sqrt(2.0f / (fan_in + fan_out));
-        std::normal_distribution<float> dist(0.0f, scale);
-        for (auto &v : W)
-            v = dist(gen);
-    };
-
-    auto init_b = [](auto &B)
-    {
-        for (auto &val : B)
-            val = 0.0f;
-    };
-
-    NeuralNetwork<float> net;
-
-    net.add_layer(std::make_unique<Dense<float>>(154 * 13, 128, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(128, 64, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(64, 512, init_w, init_b));
-    net.add_layer(std::make_unique<Softmax<float>>());
-
-    std::string custom_path = "";
-    do
-    {
-        std::cout << "Input full path of model: " << std::endl;
-        std::getline(std::cin, custom_path);
-        if (std::filesystem::is_directory(custom_path) || !std::filesystem::exists(custom_path))
-        {
-            std::cout << "Invalid path. Try again." << std::endl;
-            custom_path = "";
-        }
-    } while (custom_path.empty());
-
-    std::cout << "Reading model from file... ";
-    net.load(custom_path);
-    std::cout << "Done." << std::endl;
-
     bool printRaw = false;
     bool printFrame = false;
     bool notPopn10 = false;
@@ -373,6 +319,8 @@ int main(int argc, char *argv[])
     if (printFrame) std::cout << "Modified frame printing enabled" << std::endl;
     if (notPopn10) std::cout << "Marked as not Pop'n Music 10" << std::endl;
     if (customPos) std::cout << "Custom position: " << customX << " " << customY << std::endl;
+
+    Trainer net(true);
 
     std::cout << "Starting capture (" << fmtName << ") on device " << devName << "... Press ESC to quit.\n";
     while (av_read_frame(fmtCtx, pkt) >= 0)

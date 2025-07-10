@@ -5,18 +5,12 @@
 #include <tuple>
 #include <map>
 #include <vector>
-#include <chrono>
-
-#include "utec/algebra/Tensor.h"
-#include "utec/nn/neural_network.h"
-#include "utec/nn/nn_activation.h"
-#include "utec/nn/nn_dense.h"
-#include "utec/nn/nn_loss.h"
-#include "utec/nn/nn_optimizer.h"
-
-#include <random>
 #include <filesystem>
 
+#include "utec/nn/nn_optimizer.h"
+#include "training/trainer.h"
+
+using namespace training;
 using namespace utec::neural_network;
 
 std::tuple<std::vector<std::vector<float>>, std::vector<int>> load_dataset(
@@ -75,70 +69,17 @@ int main() {
         label_tensor(i, class_idx) = 1.0f;
     }
 
-    auto init_w = [&](auto& W){
-        std::mt19937 gen(42);
-        float fan_in  = W.shape()[1];
-        float fan_out = W.shape()[0];
-        float scale   = std::sqrt(2.0f/(fan_in + fan_out));
-        std::normal_distribution<float> dist(0.0f, scale);
-        for (auto& v : W) v = dist(gen);
-    };
-
-    auto init_b = [](auto& B) {
-        for (auto& val : B) val = 0.0f;
-    };
-
-    NeuralNetwork<float> net;
-
-    net.add_layer(std::make_unique<Dense<float>>(154*13, 128, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(128, 64, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(64, 512, init_w, init_b));
-    net.add_layer(std::make_unique<Softmax<float>>());
-
-    std::string custom_path = "";
-    do
-    {
-        std::cout << "Input full path of model: " << std::endl;
-        std::getline(std::cin, custom_path);
-        if (std::filesystem::is_directory(custom_path) || !std::filesystem::exists(custom_path))
-        {
-            std::cout << "Invalid path. Try again." << std::endl;
-            custom_path = "";
-        }
-    } while (custom_path.empty());
-
-    std::cout << "Reading model from file... ";
-    net.load(custom_path);
-    std::cout << "Done." << std::endl;
+    Trainer net(true);
 
     std::cout << "Predicting..." << std::endl;
 
-
     std::vector<size_t> which_failed;
-    auto final_preds = net.predict(input_tensor);
     size_t correct = 0;
     size_t incorrect = 0;
-    for (size_t i = 0; i < final_preds.shape()[0]; ++i) {
-        size_t pred = 0;
-        auto maxv = final_preds(i,0);
-        for (size_t j = 1; j < final_preds.shape()[1]; ++j) {
-            if (final_preds(i,j) > maxv) { maxv = final_preds(i,j); pred = j; }
-        }
-        if (label_tensor(i, pred) == 1.0f) correct++;
-        else {
-            incorrect++;
-            which_failed.push_back(i);
-        }
 
-        std::cout << "[" << i << "] ";
-        std::cout << "Real pattern: " << patternClass[labels[i]] << " (" << labels[i] << ")" << std::endl;
-        std::cout << " Predicted pattern: " << patternClass[classPattern[pred]] << " (" << classPattern[pred] << ")" << std::endl << std::endl;
-    }
-    std::cout << "Final accuracy: "
-            << (100.0f * correct / final_preds.shape()[0])
-            << "%\n";
+    size_t correctPerc = net.predict_batch(input_tensor, label_tensor, labels, patternClass, classPattern, which_failed, correct, incorrect, true);
+
+    std::cout << "Final accuracy: " << correctPerc << "%" << std::endl;
     std::cout << "Correct guesses: " << correct << " | Incorrect guesses: " << incorrect << std::endl;
     std::cout << "Which failed: [";
     for (size_t &i : which_failed) {

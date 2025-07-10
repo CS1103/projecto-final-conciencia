@@ -5,18 +5,13 @@
 #include <tuple>
 #include <map>
 #include <vector>
-#include <chrono>
-
-#include "utec/algebra/Tensor.h"
-#include "utec/nn/neural_network.h"
-#include "utec/nn/nn_activation.h"
-#include "utec/nn/nn_dense.h"
-#include "utec/nn/nn_loss.h"
-#include "utec/nn/nn_optimizer.h"
-
-#include <random>
 #include <filesystem>
 
+#include "utec/nn/nn_optimizer.h"
+
+#include "training/trainer.h"
+
+using namespace training;
 using namespace utec::neural_network;
 
 std::tuple<std::vector<std::vector<float>>, std::vector<int32_t>> load_dataset(
@@ -104,117 +99,22 @@ int mainTraining(int epochs)
         testlab_tensor(i, class_idx) = 1.0f;
     }
 
-    auto init_w = [&](auto &W)
-    {
-        std::mt19937 gen(42);
-        float fan_in = W.shape()[1];
-        float fan_out = W.shape()[0];
-        float scale = std::sqrt(2.0f / (fan_in + fan_out));
-        std::normal_distribution<float> dist(0.0f, scale);
-        for (auto &v : W)
-            v = dist(gen);
-    };
-
-    auto init_b = [](auto &B)
-    {
-        for (auto &val : B)
-            val = 0.0f;
-    };
-
-    NeuralNetwork<float> net;
-
-    net.add_layer(std::make_unique<Dense<float>>(154 * 13, 128, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(128, 64, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(64, 512, init_w, init_b));
-    net.add_layer(std::make_unique<Softmax<float>>());
-
-    auto t0 = std::chrono::steady_clock::now();
+    Trainer net;
     std::cout << "Starting to train..." << std::endl;
-    net.train<CrossEntropyLoss>(input_tensor, label_tensor, epochs, 32, 0.001f);
+    net.callTrain(input_tensor, label_tensor, epochs);
 
-    auto t1 = std::chrono::steady_clock::now();
-    std::cout << "Training took "
-              << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count()
-              << " seconds\n";
-
-    std::cout << "Saving to file... ";
-    net.save("./model_ep" + std::to_string(epochs) + ".nn");
-    std::cout << "Done." << std::endl;
-
+    net.save_model("./model_ep" + std::to_string(epochs) + ".nn");
     std::cout << "Predicting..." << std::endl;
 
-    auto final_preds = net.predict(testinp_tensor);
-    size_t correct = 0;
-    for (size_t i = 0; i < final_preds.shape()[0]; ++i)
-    {
-        size_t pred = 0;
-        auto maxv = final_preds(i, 0);
-        for (size_t j = 1; j < final_preds.shape()[1]; ++j)
-        {
-            if (final_preds(i, j) > maxv)
-            {
-                maxv = final_preds(i, j);
-                pred = j;
-            }
-        }
-        if (testlab_tensor(i, pred) == 1.0f)
-            ++correct;
-    }
-    std::cout << "Final accuracy: "
-              << (100.0f * correct / final_preds.shape()[0])
-              << "%\n";
+    size_t correctPerc = net.predict_test(testinp_tensor, true);
+    std::cout << "Final accuracy: " << correctPerc << "%" << std::endl;
 
     return 0;
 }
 
 int redoTraining(int epochs)
 {
-    auto init_w = [&](auto &W)
-    {
-        std::mt19937 gen(42);
-        float fan_in = W.shape()[1];
-        float fan_out = W.shape()[0];
-        float scale = std::sqrt(2.0f / (fan_in + fan_out));
-        std::normal_distribution<float> dist(0.0f, scale);
-        for (auto &v : W)
-            v = dist(gen);
-    };
-
-    auto init_b = [](auto &B)
-    {
-        for (auto &val : B)
-            val = 0.0f;
-    };
-
-    NeuralNetwork<float> net;
-
-    net.add_layer(std::make_unique<Dense<float>>(154 * 13, 128, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(128, 64, init_w, init_b));
-    net.add_layer(std::make_unique<ReLU<float>>());
-    net.add_layer(std::make_unique<Dense<float>>(64, 512, init_w, init_b));
-    net.add_layer(std::make_unique<Softmax<float>>());
-
-    std::string custom_path = "";
-    std::cin.clear();
-    std::cin.ignore(100, '\n');
-    do
-    {
-        std::cout << "Input full path: " << std::endl;
-        std::getline(std::cin, custom_path);
-        if (std::filesystem::is_directory(custom_path) || !std::filesystem::exists(custom_path))
-        {
-            std::cout << "Invalid path. Try again." << std::endl;
-            custom_path = "";
-            std::cin.clear();
-        }
-    } while (custom_path.empty());
-
-    std::cout << "Reading model from file... ";
-    net.load(custom_path);
-    std::cout << "Done." << std::endl;
+    Trainer net(true);
 
     auto [images, labels] = load_dataset("./results/images.bin", "./results/labels.bin");
     auto [test_images, test_labels] = load_dataset("./results/test_images.bin", "./results/test_labels.bin");
@@ -269,38 +169,14 @@ int redoTraining(int epochs)
         testlab_tensor(i, class_idx) = 1.0f;
     }
 
-    auto t0 = std::chrono::steady_clock::now();
     std::cout << "Starting to train..." << std::endl;
-    net.train<CrossEntropyLoss>(input_tensor, label_tensor, epochs, 32, 0.001f);
+    net.callTrain(input_tensor, label_tensor, epochs);
 
-    auto t1 = std::chrono::steady_clock::now();
-    std::cout << "Training took "
-              << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count()
-              << " seconds" << std::endl;
-
-    auto final_preds = net.predict(testinp_tensor);
-    size_t correct = 0;
-    for (size_t i = 0; i < final_preds.shape()[0]; ++i)
-    {
-        size_t pred = 0;
-        auto maxv = final_preds(i, 0);
-        for (size_t j = 1; j < final_preds.shape()[1]; ++j)
-        {
-            if (final_preds(i, j) > maxv)
-            {
-                maxv = final_preds(i, j);
-                pred = j;
-            }
-        }
-        if (testlab_tensor(i, pred) == 1.0f)
-            ++correct;
-    }
-    std::cout << "Final accuracy: "
-              << (100.0f * correct / final_preds.shape()[0])
-              << "%" << std::endl;
+    size_t correctPerc = net.predict_test(testinp_tensor, true);
+    std::cout << "Final accuracy: " << correctPerc << "%" << std::endl;
 
     std::cout << "Saving to file... ";
-    net.save("./" + std::filesystem::path(custom_path).stem().string() + "_ep" + std::to_string(epochs) + ".nn");
+    net.save_model("./" + std::filesystem::path(net.custom_path()).stem().string() + "_ep" + std::to_string(epochs) + ".nn");
     std::cout << "Done." << std::endl;
 
     return 0;
