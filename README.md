@@ -323,11 +323,11 @@ Manual de uso y casos de prueba
 Generamos las imágenes con main.cpp ubicado en generator, estas serán almacenadas en result de cmake-debug-build
 Entrenamos el modelo con src/main.cpp, eligiendo la cantidad de épocas deseada. Los modelos se almacenarán en cmake-debug-build 
 > Probamos los modelos con:
-tests/image_evaluator, imagen por imagen
-tests/batch_evaluator, para conocer la precisión respecto a toda la data
+tests/image_evaluator, evalúa imagen por imagen
+tests/batch_evaluator, evalúa todo el conjunto de imágenes y da a conocer la precisión del modelo
 > Rutas específicas:
-
-  ```
+- tests/image_evaluator
+```
 Input full path of model:
 ...\proyecto-progra3\cmake-build-debug\model_ep150.nn
 Reading model from file... Done.
@@ -363,7 +363,25 @@ OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:
 ,oOXXX######XXXOo,......................................................................................................
 ................................
  Predicted pattern: 18
-  ```
+```
+
+- tests/batch_evaluator
+```
+Loading data is done!
+Input full path of model:
+C:\Users\Usuario\CLionProjects\proyecto-progra3\cmake-build-debug\model_ep150.nn
+Reading model from file... Done.
+Predicting...
+.
+.
+.
+[46079] Real pattern: 511 (0)
+ Predicted pattern: 511 (0)
+
+Final accuracy: 99%
+Correct guesses: 46078 | Incorrect guesses: 2
+Which failed: [44436 45082 ]
+```
 
 ---
 
