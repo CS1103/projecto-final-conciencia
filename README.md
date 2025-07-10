@@ -340,13 +340,15 @@ Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación
   * Tiempo total de entrenamiento: 1h03m15s.
   * Precisión final: 92.5%.
 * **Ventajas/Desventajas**:
+  * * Código efectivo para el entrenamiento.
+  * * Uso adecuado de la función de perdida.
+  * * Uso de hilos que facilitan los calculos para el entreamiento.
 
-  * * Código ligero y dependencias mínimas.
-  * – Sin paralelización, rendimiento limitado.
+  * – Sin optimizaciones numéricas.
 * **Mejoras futuras**:
 
-  * Uso de BLAS para multiplicaciones (Justificación).
-  * Paralelizar entrenamiento por lotes (Justificación).
+  * Incorporar el uso de BLAS (Basic Linear Algebra Subprograms) para operaciones matriciales, como la multiplicación de matrices en capas densas.
+  * Incorporar algoritmos de optimización más avanzados, como Gradiente Descendente con Momentum. La razón de esto es que el optimizador actual (SGD) actualiza los pesos solo con base en el gradiente actual, lo que puede generar oscilaciones en regiones de la función de pérdida con mucha curvatura o valles largos. Y el uso de momentum agrega una fracción del gradiente anterior al gradiente actual, permitiendo avanzar más rápido en direcciones consistentes y amortiguar oscilaciones.
 
 ---
 
