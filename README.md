@@ -315,8 +315,11 @@ proyecto-final/
 │       └── src/main.cpp
 ```
 ---
+#### 2.2 Diagrama de clases
+<img width="14703" height="5274" alt="Image" src="https://github.com/user-attachments/assets/9ef9427b-529c-45d2-871c-cd0114a82586" />
 
-#### 2.2 Manual de uso y casos de prueba
+---
+#### 2.3 Manual de uso y casos de prueba
 
 Manual de uso y casos de prueba
 
