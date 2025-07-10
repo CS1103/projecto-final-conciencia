@@ -365,10 +365,13 @@ Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación
 
 ### 6. Conclusiones
 
-* **Logros**: Implementar NN desde cero, validar en dataset de ejemplo.
-* **Evaluación**: Calidad y rendimiento adecuados para propósito académico.
-* **Aprendizajes**: Profundización en backpropagation y optimización.
-* **Recomendaciones**: Escalar a datasets más grandes y optimizar memoria.
+* **Logros:**  Se llevó a cabo con éxito una red neuronal desde el inicio en C++, incluyendo elementos como tensores, funciones de activación, pérdida y optimización, y se comprobó su rendimiento en un dataset sintético creado automáticamente.
+
+* **Resultados:**  El modelo logró una exactitud que superó el 99% en validaciones por lotes y demostró habilidad para generalizar al implementarse en situaciones reales en el videojuego Pop’n Music.
+
+ * **Aprendizaje:**  Se profundizó en aspectos fundamentales del aprendizaje profundo como la retropropagación, la normalización de entradas, la inicialización de pesos y la modificación de hiperparámetros en ambientes de nivel bajo sin frameworks externos.
+
+ * **Sugerencias:**  Para futuras mejoras, se recomienda expandirse a datasets más complejos y diversos, incorporar entrenamiento con GPU (CUDA) para disminuir los tiempos computacionales, y aplicar métodos adicionales como la normalización y normalización en grupo.
 
 ---
 
