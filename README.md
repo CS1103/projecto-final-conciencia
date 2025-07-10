@@ -269,7 +269,7 @@ Es así como gracias a esta clase,todo el sistema de entrenamiento y evaluación
 * **Patrones de diseño**: ejemplo: Factory para capas, Strategy para optimizadores.
 * **Estructura de carpetas**:
 
-  ```
+  ``` bash
 proyecto-final/
 ├── generator/	              #Generador de imágenes de entrada tipo juego rítmico
 |   ├── assets/              #Recursos visuales: pop-kuns y plantillas
@@ -315,6 +315,7 @@ proyecto-final/
 │   └── image_evaluator/
 │       └── src/main.cpp
   ```
+---
 
 #### 2.2 Manual de uso y casos de prueba
 
