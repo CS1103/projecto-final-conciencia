@@ -27,7 +27,7 @@
 * **Integrantes**:
 
   * Matos Copello Rayhan Derek – 202410377 (Responsable de investigación teórica)
-  * Tamara Ureta, Anyeli Azumi – 200900000 (Responsable de investigación teórica)
+  * Tamara Ureta, Anyeli Azumi – 202410590 (Responsable de investigación teórica)
   * Alvarado León, Adriana Celeste – 209900002 (Diseño e implementación)
   * Mattos Gutierrez, Angel Daniel – 202420199 (Implementación del modelo)
   * Aquino Castro Farid Jack – 202410569 (Análisis y Rendimiento)
