@@ -2,9 +2,11 @@
 # Proyecto Final 2025-1: AI Neural Network
 ## **CS2013 Programación III** · Informe Final
 
+https://github.com/user-attachments/assets/769b0e79-32c9-4553-8853-a18908db015f
+
 ### **Descripción**
 
-> Ejemplo: Implementación de una red neuronal multicapa en C++ para clasificación de dígitos manuscritos.
+Implementación de una red neuronal multicapa en C++ para controlar y detectar los patrones del videojuego Pop'n Music.
 
 ### Contenidos
 
