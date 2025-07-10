@@ -224,19 +224,30 @@ Gracias a esta clase, el videojuego puede aprender a partir de los datos de entr
 
 ---
 
-### 5. Trabajo en equipo
+## 5. Trabajo en equipo
 
-| Tarea                     | Miembro  | Rol                       |
-| ------------------------- | -------- | ------------------------- |
-| Investigación teórica     | Alumno A | Documentar bases teóricas |
-| Diseño de la arquitectura | Alumno B | UML y esquemas de clases  |
-| Implementación del modelo | Alumno C | Código C++ de la NN       |
-| Pruebas y benchmarking    | Alumno D | Generación de métricas    |
-| Documentación y demo      | Alumno E | Tutorial y video demo     |
-
-> *Actualizar con tareas y nombres reales.*
+| **Tarea**                    | **Miembro**                             | **Rol**                         |
+|-----------------------------|-----------------------------------------|---------------------------------|
+| Investigación teórica       | Matos Copello Rayhan Derek              | Documentar bases teóricas       |
+| Investigación teórica       | Tamara Ureta, Anyeli Azumi              | Documentar bases teóricas       |
+| Diseño e implementación     | Alvarado León, Adriana Celeste          | UML y esquemas de clases        |
+| Implementación del modelo   | Mattos Gutierrez, Angel Daniel          | Código C++ de la NN             |
+| Análisis y rendimiento      | Aquino Castro Farid Jack                | Generación de métricas          |
+| Documentación y demo        | Portugal Vilca Julio Cesar              | Tutorial y video demo           |
 
 ---
+
+### Datos generales
+
+- **Tema**: Redes Neuronales en AI
+- **Grupo**: `group_3_custom_name`
+- **Integrantes**:
+  - Matos Copello Rayhan Derek – 202410377 (Responsable de investigación teórica)
+  - Tamara Ureta, Anyeli Azumi – 200900000 (Responsable de investigación teórica)
+  - Alvarado León, Adriana Celeste – 209900002 (Diseño e implementación)
+  - Mattos Gutierrez, Angel Daniel – 202420199 (Implementación del modelo)
+  - Aquino Castro Farid Jack – 202410569 (Análisis y Rendimiento)
+  - Portugal Vilca Julio Cesar – 202410487 (Documentación y demo)
 
 ### 6. Conclusiones
 
@@ -247,44 +258,36 @@ Gracias a esta clase, el videojuego puede aprender a partir de los datos de entr
 
 ---
 
-### 7. Bibliografía
+## 7. Referencias Bibliográficas
 
-1. J. Schmidhuber, *Deep Learning in Neural Networks: An Overview*, Neural Networks, vol. 61, pp. 85–117, 2015.
-
-2. R. Zhang, W. Li, and T. Mo, *Review of Deep Learning*, arXiv preprint arXiv:1804.01653, 2018. [https://arxiv.org/abs/1804.01653](https://arxiv.org/abs/1804.01653)
-
-3. I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. MIT Press, 2016.
-
-4. R. Szeliski, *Computer Vision: Algorithms and Applications*. Springer, 2010.
-
-5. The Royal Society and The Alan Turing Institute, *Synthetic Data: What, Why and How?*. The Royal Society, 2021.
-
-6. Y. Lu, M. Shen, H. Wang, et al., *Machine Learning for Synthetic Data Generation: A Review*, arXiv preprint arXiv:2305.15799, 2023. [https://arxiv.org/abs/2305.15799](https://arxiv.org/abs/2305.15799)
-
-7. A. Bauer, S. Trapp, M. Stenger, et al., *Comprehensive Exploration of Synthetic Data Generation: A Survey*, arXiv preprint arXiv:2401.03067, 2024. [https://arxiv.org/abs/2401.03067](https://arxiv.org/abs/2401.03067)
-
-8. M. Giuffrè and D. L. Shung, *Harnessing the Power of Synthetic Data in Healthcare: Innovation, Application, and Privacy*, npj Digital Medicine, vol. 6, no. 186, 2023. [https://doi.org/10.1038/s41746-023-00927-3](https://doi.org/10.1038/s41746-023-00927-3)
-
-9. K. Fukushima, *Visual feature extraction by a multilayered network of analog threshold elements*, IEEE Trans. Systems Science and Cybernetics, vol. 5, no. 4, pp. 322–333, 1969.
-
-10. K. Jarrett, K. Kavukcuoglu, M. A. Ranzato, and Y. LeCun, *What is the Best Multi-Stage Architecture for Object Recognition?*, in 2009 IEEE 12th International Conference on Computer Vision, 2009, pp. 2146–2153. [https://doi.org/10.1109/ICCV.2009.5459469](https://doi.org/10.1109/ICCV.2009.5459469)
-
-11. X. Glorot, A. Bordes, and Y. Bengio, *Deep sparse rectifier neural networks*, in Proc. 14th Int. Conf. Artif. Intell. Statist. (AISTATS), 2011, pp. 315–323.
-
-12. L. Boltzmann, *Studien über das Gleichgewicht der lebendigen Kraft zwischen bewegten materiellen Punkten*, Wiener Berichte, vol. 58, pp. 517–560, 1868.
-
-13. J. W. Gibbs, *Elementary Principles in Statistical Mechanics*. Yale University Press, 1902.
-
-14. V. Shatravin, D. Shashev, and S. Shidlovskiy, *Implementation of the SoftMax Activation for Reconfigurable Neural Network Hardware Accelerators*, Applied Sciences, vol. 13, no. 23, 2023. [https://doi.org/10.3390/app132312784](https://doi.org/10.3390/app132312784)
-
-15. S. Ruder, *An overview of gradient descent optimization algorithms*, arXiv preprint arXiv:1609.04747, 2017. [https://arxiv.org/abs/1609.04747](https://arxiv.org/abs/1609.04747)
-
-16. L. Bottou, *Large-Scale Machine Learning with Stochastic Gradient Descent*, in Proceedings of COMPSTAT'2010, Springer, 2010, pp. 177–186. [https://doi.org/10.1007/978-3-7908-2604-3_16](https://doi.org/10.1007/978-3-7908-2604-3_16)
-
-17. D. P. Kingma and J. Ba, *Adam: A method for stochastic optimization*, arXiv preprint arXiv:1412.6980, 2014. [https://arxiv.org/abs/1412.6980](https://arxiv.org/abs/1412.6980)
-
-18. A. C. Wilson, R. Roelofs, M. Stern, N. Srebro, and B. Recht, *The marginal value of adaptive gradient methods in machine learning*, in Advances in Neural Information Processing Systems (NeurIPS), 2017.
----
+[1] J. Schmidhuber, "Deep Learning in Neural Networks: An Overview," Neural Networks, vol. 61, pp. 85–117, 2015.  
+[2] R. Zhang, W. Li, and T. Mo, "Review of Deep Learning," arXiv preprint arXiv:1804.01653, 2018.  
+[3] I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. MIT Press, 2016.  
+[4] R. Szeliski, *Computer Vision: Algorithms and Applications*. Springer, 2010.  
+[5] The Royal Society and The Alan Turing Institute, "Synthetic Data: What, Why and How?," The Royal Society, 2021.  
+[6] Y. Lu, M. Shen, H. Wang, et al., "Machine Learning for Synthetic Data Generation: A Review," arXiv preprint arXiv:2305.15799, 2023.  
+[7] A. Bauer, S. Trapp, M. Stenger, et al., "Comprehensive Exploration of Synthetic Data Generation: A Survey," arXiv preprint arXiv:2401.03067, 2024.  
+[8] M. Giuffrè and D. L. Shung, "Harnessing the Power of Synthetic Data in Healthcare: Innovation, Application, and Privacy," *npj Digital Medicine*, vol. 6, no. 186, 2023. doi: 10.1038/s41746-023-00927-3.  
+[9] K. Fukushima, "Visual feature extraction by a multilayered network of analog threshold elements," *IEEE Trans. Systems Science and Cybernetics*, vol. 5, no. 4, pp. 322–333, 1969.  
+[10] K. Jarrett, K. Kavukcuoglu, M. A. Ranzato, and Y. LeCun, "What is the Best Multi-Stage Architecture for Object Recognition?," in *2009 IEEE 12th International Conference on Computer Vision*, 2009, pp. 2146–2153. doi: 10.1109/ICCV.2009.5459469.  
+[11] X. Glorot, A. Bordes, and Y. Bengio, "Deep sparse rectifier neural networks," in *Proc. 14th Int. Conf. Artif. Intell. Statist. (AISTATS)*, 2011, pp. 315–323.  
+[12] L. Boltzmann, "Studien über das Gleichgewicht der lebendigen Kraft zwischen bewegten materiellen Punkten," *Wiener Berichte*, vol. 58, pp. 517–560, 1868.  
+[13] J. W. Gibbs, *Elementary Principles in Statistical Mechanics*. Yale University Press, 1902.  
+[14] V. Shatravin, D. Shashev, and S. Shidlovskiy, "Implementation of the SoftMax Activation for Reconfigurable Neural Network Hardware Accelerators," *Applied Sciences*, vol. 13, no. 23, 2023. doi: 10.3390/app132312784.  
+[15] S. Ruder, "An overview of gradient descent optimization algorithms," arXiv preprint arXiv:1609.04747, 2017.  
+[16] L. Bottou, "Large-Scale Machine Learning with Stochastic Gradient Descent," in *Proceedings of COMPSTAT'2010*, Springer, 2010, pp. 177–186. doi: 10.1007/978-3-7908-2604-3_16.  
+[17] D. P. Kingma and J. Ba, "Adam: A method for stochastic optimization," arXiv preprint arXiv:1412.6980, 2014.  
+[18] A. C. Wilson, R. Roelofs, M. Stern, N. Srebro, and B. Recht, "The marginal value of adaptive gradient methods in machine learning," in *Advances in Neural Information Processing Systems (NeurIPS)*, 2017.  
+[19] J. Brownlee, “Rectified Linear Activation Function for Deep Learning Neural Networks,” *Machine Learning Mastery*, 2019. [Online]. Available: https://machinelearningmastery.com/rectified-linear-activation-function-for-deep-learning-neural-networks/  
+[20] DataCamp, “What is ReLU? The Rectified Linear Unit Activation Function,” *DataCamp Blog*, 2023. [Online]. Available: https://www.datacamp.com/blog/rectified-linear-unit-relu  
+[21] OldGameShelf, “Pop’n Music GB (GBC),” *OldGameShelf.com*, [Online]. Available: https://oldgameshelf.com/es/games/gbc/pop%27n-music-gb-gbc-6719  
+[22] Deepchecks, “Rectified Linear Unit (ReLU),” *Deepchecks Glossary*, 2023. [Online]. Available: https://www.deepchecks.com/glossary/rectified-linear-unit-relu/  
+[23] PyTorch, “Reducing storage footprint and bandwidth usage for distributed checkpoints with PyTorch DCP,” *PyTorch Blog*, 2023. [Online]. Available: https://pytorch.org/blog/reducing-storage-footprint-and-bandwidth-usage-for-distributed-checkpoints-with-pytorch-dcp/  
+[24] Analytics Vidhya, “Introduction to Softmax for Neural Network,” *Analytics Vidhya*, 2021. [Online]. Available: https://www.analyticsvidhya.com/blog/2021/04/introduction-to-softmax-for-neural-network/  
+[25] Built In, “What Is a Fully Connected Layer?,” *builtin.com*, [Online]. Available: https://builtin.com/machine-learning/fully-connected-layer  
+[26] Nerdjock, “Deep Learning Course Lesson 5: Forward and Backward Propagation,” *Medium*, 2020. [Online]. Available: https://medium.com/@nerdjock/deep-learning-course-lesson-5-forward-and-backward-propagation-ec8e4e6a8b92  
+[27] KeepCoding, “Forward y Back Propagation en Deep Learning,” *KeepCoding.io*, [Online]. Available: https://keepcoding.io/blog/forward-back-propagation-deep-learning/  
+[28] Universidad de Guadalajara, “Capas de una red neuronal,” *CUCSur UDGVirtual*, 2024. [Online]. Available: http://cucsur.udgvirtual.udg.mx/oa/2024/RedesNeu/capas.html
 
 ### Licencia
 
