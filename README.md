@@ -32,7 +32,7 @@
   * Mattos Gutierrez, Angel Daniel – 202420199 (Implementación del modelo)
   * Aquino Castro Farid Jack – 202410569 (Análisis y Rendimiento)
   * Portugal Vilca Julio Cesar – 202410487 (Documentación y demo)
-
+> **Nota**: El informe completo se encuentra adjunto en el repositorio del proyecto.
 ---
 
 ### Requisitos e instalación
